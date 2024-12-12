@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="..\..\object\schedulerDB.exe"/>
+    <OBJFILES value="..\..\object\Schedule\schedulerDB.obj 
+      ..\..\object\Schedule\dbConvertFrm.obj 
+      ..\..\object\Schedule\schedulerDBfrm.obj ..\..\object\Schedule\Config.obj 
+      ..\..\object\Schedule\LoginDlg.obj ..\..\object\Schedule\StatusFrm.obj"/>
+    <RESFILES value="schedulerDB.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) ..\GAKLIB\Repository\dbConvertFrm.dfm schedulerDBfrm.dfm 
+      ..\GAKLIB\Repository\Config.dfm ..\GAKLIB\Repository\LoginDlg.dfm 
+      ..\GAKLIB\Repository\StatusFrm.dfm"/>
+    <LIBFILES value="..\..\Object\gaklib\gaklib_bcb.lib ..\..\Object\winlib\winlibBCB.lib"/>
+    <LIBRARIES value="qrpt50.lib tee50.lib teedb50.lib vclx50.lib vcl50.lib ocx_pack.lib 
+      vclbde50.lib vcldb50.lib gak_components.lib bcbsmp50.lib"/>
+    <SPARELIBS value="bcbsmp50.lib gak_components.lib vcldb50.lib vclbde50.lib ocx_pack.lib 
+      vcl50.lib vclx50.lib teedb50.lib tee50.lib qrpt50.lib"/>
+    <PACKAGES value="Vcl50.bpi Vclx50.bpi bcbsmp50.bpi dclocx50.bpi Vcldb50.bpi vclado50.bpi 
+      Vclbde50.bpi vcldbx50.bpi ibsmp50.bpi bcb2kaxserver50.bpi bcbie50.bpi 
+      Dss50.bpi vclie50.bpi Inetdb50.bpi Inet50.bpi webmid50.bpi Vclmid50.bpi 
+      TeeQR50.bpi Qrpt50.bpi NMFast50.bpi VCLIB50.bpi"/>
+    <PATHCPP value=".;..\GAKLIB\Repository"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib_ger\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib_ger\release"/>
+    <LINKER value="tlink32"/>
+    <USERDEFINES value="NDEBUG"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="schedulerDB.cpp"/>
+    <INCLUDEPATH value="..\GAKLIB\Repository;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\ocx;..\GAKLIB\VCLcomp;..\gaklib\include;.."/>
+    <LIBPATH value="..\GAKLIB\Repository;..\..\Object\CBuilder\Lib;$(BCB)\lib_ger\obj;$(BCB)\lib_ger"/>
+    <WARNINGS value="-w-par"/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\GAKLIB\Repository -I$(BCB)\include -I$(BCB)\include\vcl -I$(BCB)\ocx 
+      -I..\GAKLIB\VCLcomp -I..\gaklib\include -I.. -src_suffix cpp -DNDEBUG -boa"/>
+    <CFLAG1 value="-O2 -H=..\..\object\schedule\scheduleDB.csm -Hc -w -Vx -Ve -X- -a8 -6 -b- 
+      -d -k- -vi -c -tW -tWM"/>
+    <PFLAGS value="-N2..\..\object\Schedule -N0..\..\object\Schedule -$Y- -$L- -$D- -v -JPHNE 
+      -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-I..\..\object\Schedule -D&quot;&quot; -aa -Tpe -GD -s -Gn -w"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=1
+MajorVer=1
+MinorVer=0
+Release=0
+Build=35
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1031
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=Martin Gäckler
+FileDescription=Scheduler DB Verwaltung
+FileVersion=1.0.0.35
+InternalName=
+LegalCopyright=(c) 2002 - 2012 by Martin Gäckler
+LegalTrademarks=
+OriginalFilename=
+ProductName=GAK Terminverwaltung
+ProductVersion=1.0.0.0
+Comments=https://www.gaeckler.at/
+
+[HistoryLists\hlIncludePath]
+Count=4
+Item0=..\GAKLIB\Repository;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\ocx;..\GAKLIB\VCLcomp;..\gaklib\include;..
+Item1=..\GAKLIB\Repository;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\ocx;..\GAKLIB\VCLcomp;..\gaklib\include;..\
+Item2=..\GAKLIB\Repository;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\ocx;..\GAKLIB\VCLcomp;..\gaklib\include
+Item3=..\GAKLIB\VCL_TOOLS;..\GAKLIB\Repository;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\ocx;..\GAKLIB\VCLcomp;..\gaklib\include
+
+[HistoryLists\hlLibraryPath]
+Count=3
+Item0=..\GAKLIB\Repository;..\..\Object\CBuilder\Lib;$(BCB)\lib_ger\obj;$(BCB)\lib_ger
+Item1=..\..\Object\CBuilder\Lib;$(BCB)\lib_ger\obj;$(BCB)\lib_ger
+Item2=..\GAKLIB\VCL_TOOLS;..\GAKLIB\Repository;..\..\Object\CBuilder\Lib;$(BCB)\lib_ger\obj;$(BCB)\lib_ger
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=3
+Item0=NDEBUG
+Item1=NDEBUG;_DEBUG
+Item2=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\..\object\Schedule
+
+[HistoryLists\hlFinalOutputDir]
+Count=1
+Item0=..\..\object\
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>

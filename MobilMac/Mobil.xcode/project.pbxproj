@@ -1,0 +1,384 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 39;
+	objects = {
+		0867D6ABFE840B52C02AAC07 = {
+			fileEncoding = 10;
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.strings;
+			path = InfoPlist.strings;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//080
+//081
+//082
+//083
+//084
+//190
+//191
+//192
+//193
+//194
+		195DF8CFFE9D517E11CA2CBB = {
+			children = (
+				8D0C4E970486CD37000505A6,
+			);
+			isa = PBXGroup;
+			name = Products;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//190
+//191
+//192
+//193
+//194
+//200
+//201
+//202
+//203
+//204
+		20286C28FDCF999611CA2CEA = {
+			buildSettings = {
+			};
+			buildStyles = (
+				4A9504C5FFE6A39111CA0CBA,
+				4A9504C6FFE6A39111CA0CBA,
+			);
+			hasScannedForEncodings = 1;
+			isa = PBXProject;
+			mainGroup = 20286C29FDCF999611CA2CEA;
+			projectDirPath = "";
+			targets = (
+				8D0C4E890486CD37000505A6,
+			);
+		};
+		20286C29FDCF999611CA2CEA = {
+			children = (
+				2EAE830B185F08B9007AD9AB,
+				20286C2AFDCF999611CA2CEA,
+				20286C2CFDCF999611CA2CEA,
+				20286C32FDCF999611CA2CEA,
+				195DF8CFFE9D517E11CA2CBB,
+			);
+			isa = PBXGroup;
+			name = Mobil;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		20286C2AFDCF999611CA2CEA = {
+			children = (
+				32DBCF6D0370B57F00C91783,
+				20286C2BFDCF999611CA2CEA,
+			);
+			isa = PBXGroup;
+			name = Sources;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		20286C2BFDCF999611CA2CEA = {
+			explicitFileType = sourcecode.cpp.cpp;
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = mobilMac.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		20286C2CFDCF999611CA2CEA = {
+			children = (
+				2E1EDDF409BCE6D6007A2ABB,
+				2E1EDD4709BCDACD007A2ABB,
+				2E1EDD3909BCD975007A2ABB,
+				8D0C4E960486CD37000505A6,
+				0867D6ABFE840B52C02AAC07,
+			);
+			isa = PBXGroup;
+			name = Resources;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		20286C32FDCF999611CA2CEA = {
+			children = (
+				20286C33FDCF999611CA2CEA,
+				4A9504CAFFE6A41611CA0CBA,
+				4A9504C8FFE6A3BC11CA0CBA,
+			);
+			isa = PBXGroup;
+			name = "External Frameworks and Libraries";
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		20286C33FDCF999611CA2CEA = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = Carbon.framework;
+			path = /System/Library/Frameworks/Carbon.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+//200
+//201
+//202
+//203
+//204
+//2E0
+//2E1
+//2E2
+//2E3
+//2E4
+		2E1EDD3909BCD975007A2ABB = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.icns;
+			path = mobil.icns;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		2E1EDD3A09BCD975007A2ABB = {
+			fileRef = 2E1EDD3909BCD975007A2ABB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2E1EDD4709BCDACD007A2ABB = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.rsrc;
+			path = mobil128.rsrc;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		2E1EDD4809BCDACD007A2ABB = {
+			fileRef = 2E1EDD4709BCDACD007A2ABB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2E1EDD9009BCDEE3007A2ABB = {
+			buildActionMask = 2147483647;
+			files = (
+				2E1EDD9209BCDEF4007A2ABB,
+			);
+			isa = PBXRezBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2E1EDD9209BCDEF4007A2ABB = {
+			fileRef = 2E1EDD4709BCDACD007A2ABB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2E1EDDF409BCE6D6007A2ABB = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.nib;
+			path = mobil.nib;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		2E1EDDF509BCE6D6007A2ABB = {
+			fileRef = 2E1EDDF409BCE6D6007A2ABB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2EAE830B185F08B9007AD9AB = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.ar;
+			name = libgakpikasso.a;
+			path = ../../../Object/gaklib/libgakpikasso.a;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		2EAE830C185F08B9007AD9AB = {
+			fileRef = 2EAE830B185F08B9007AD9AB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2EB7D98009B464EE00100CB6 = {
+			fileRef = 0867D6ABFE840B52C02AAC07;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2EC2BE2B09BE5D31007D9258 = {
+			fileRef = 20286C33FDCF999611CA2CEA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//2E0
+//2E1
+//2E2
+//2E3
+//2E4
+//320
+//321
+//322
+//323
+//324
+		32DBCF6D0370B57F00C91783 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = Mobil_Prefix.pch;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//320
+//321
+//322
+//323
+//324
+//4A0
+//4A1
+//4A2
+//4A3
+//4A4
+		4A9504C5FFE6A39111CA0CBA = {
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = ../../GAKLIB/INCLUDE;
+				OTHER_CPLUSPLUSFLAGS = "-fpermissive";
+				PREBINDING = NO;
+				ZERO_LINK = NO;
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+		4A9504C6FFE6A39111CA0CBA = {
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				HEADER_SEARCH_PATHS = ../../GAKLIB/INCLUDE;
+				OTHER_CPLUSPLUSFLAGS = "-fpermissive";
+				PREBINDING = YES;
+				ZERO_LINK = NO;
+			};
+			isa = PBXBuildStyle;
+			name = Deployment;
+		};
+		4A9504C8FFE6A3BC11CA0CBA = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = ApplicationServices.framework;
+			path = /System/Library/Frameworks/ApplicationServices.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		4A9504CAFFE6A41611CA0CBA = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = CoreServices.framework;
+			path = /System/Library/Frameworks/CoreServices.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+//4A0
+//4A1
+//4A2
+//4A3
+//4A4
+//8D0
+//8D1
+//8D2
+//8D3
+//8D4
+		8D0C4E890486CD37000505A6 = {
+			buildPhases = (
+				8D0C4E8C0486CD37000505A6,
+				8D0C4E8F0486CD37000505A6,
+				8D0C4E910486CD37000505A6,
+				2E1EDD9009BCDEE3007A2ABB,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Mobil_Prefix.pch;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = mobil.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = "/object /var/automount/Object/gaklib /var/automount/Object";
+				PREBINDING = NO;
+				PRODUCT_NAME = Mobil;
+				WRAPPER_EXTENSION = app;
+			};
+			comments = "Mobile Zeiterfassung für Mac OS X";
+			dependencies = (
+			);
+			isa = PBXNativeTarget;
+			name = Mobil;
+			productInstallPath = "$(HOME)/Applications";
+			productName = Mobil;
+			productReference = 8D0C4E970486CD37000505A6;
+			productType = "com.apple.product-type.application";
+		};
+		8D0C4E8C0486CD37000505A6 = {
+			buildActionMask = 2147483647;
+			files = (
+				2EB7D98009B464EE00100CB6,
+				2E1EDD3A09BCD975007A2ABB,
+				2E1EDD4809BCDACD007A2ABB,
+				2E1EDDF509BCE6D6007A2ABB,
+			);
+			isa = PBXResourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D0C4E8F0486CD37000505A6 = {
+			buildActionMask = 2147483647;
+			files = (
+				8D0C4E900486CD37000505A6,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D0C4E900486CD37000505A6 = {
+			fileRef = 20286C2BFDCF999611CA2CEA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		8D0C4E910486CD37000505A6 = {
+			buildActionMask = 2147483647;
+			files = (
+				2EC2BE2B09BE5D31007D9258,
+				2EAE830C185F08B9007AD9AB,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D0C4E960486CD37000505A6 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text.xml;
+			path = mobil.plist;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		8D0C4E970486CD37000505A6 = {
+			explicitFileType = wrapper.application;
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = Mobil.app;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+	};
+	rootObject = 20286C28FDCF999611CA2CEA;
+}
