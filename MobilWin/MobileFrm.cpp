@@ -61,7 +61,7 @@ static Array<TASK_ENTRY>	theTaskFile;
 
 //---------------------------------------------------------------------------
 
-#define registryKey		"\\Software\\CRESD\\Scheduler"
+#define registryKey		"\\Software\\gak\\Scheduler"
 
 //---------------------------------------------------------------------------
 static int compareTaskEntries( const void *te1, const void *te2 )

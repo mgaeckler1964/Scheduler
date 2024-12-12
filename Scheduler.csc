@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1" ?>
 <setup>
-<application title="MG Terminverwaltung" version="1.0.0.302" author="Martin Gaeckler" />
+<application title="MG Terminverwaltung" version="1.0.0.303" author="gak" />
 <bde AliasName="SCHEDULE" RESOURCE="0007" DataPath="" dbVersion="2" />
 <icons Group="MG Scheduler">
 <icon title="Terminverwaltung" target="PROGRAM\scheduler.exe" main="true" dbUpd="" />
@@ -19,7 +19,7 @@
 <file source="..\..\Object\java\mobil.jar" />
 <file source="..\..\Object\java\MobilAndroid.apk" />
 <file source="..\..\Object\MobilMac.dmg" />
-<file source="..\Internet\web\cresd\edv\ger\Products\scheduler.pdf" />
+<file source="scheduler.pdf" />
 </group>
 </source>
 </setup>

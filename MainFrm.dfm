@@ -23,8 +23,8 @@ object MainForm: TMainForm
   TextHeight = 13
   object StatusBar: TStatusBar
     Left = 0
-    Top = 280
-    Width = 533
+    Top = 267
+    Width = 525
     Height = 19
     Panels = <
       item
@@ -51,7 +51,7 @@ object MainForm: TMainForm
   object ToolBar1: TToolBar
     Left = 0
     Top = 0
-    Width = 533
+    Width = 525
     Height = 25
     AutoSize = True
     ButtonHeight = 23
@@ -424,7 +424,8 @@ object MainForm: TMainForm
     SQL.Strings = (
       'select'#9'id, LastExport, LastTask'
       'from'#9'user_tab'
-      'where'#9'upper(username) = upper(:theUser)')
+      'where'#9'upper(username) = upper(:theUser)'
+      ' ')
     UniDirectional = True
     Left = 256
     Top = 80

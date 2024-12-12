@@ -11,3 +11,8 @@ The JavaME version was used with a Nokia and a Sony Ericson. The Siemens Phone w
 
 For Android I used Eclipse with Android SDK, may be I will switch to Android Developper Studio or newer in future. Currently I do not use the mobile version, thus I need not to compile.
 The Android Version was used with an HTC Desire.
+
+
+A setup can be downloaded from my website
+
+https://www.gaeckler.at/Software/software.htm

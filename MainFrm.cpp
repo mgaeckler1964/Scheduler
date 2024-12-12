@@ -64,7 +64,7 @@ using namespace vcl;
 //---------------------------------------------------------------------------
 
 
-char *registryKey = "\\Software\\CRESD\\Scheduler";
+char *registryKey = "\\Software\\gak\\Scheduler";
 TMainForm *MainForm;
 //---------------------------------------------------------------------------
 __fastcall TMainForm::TMainForm(TComponent* Owner)
@@ -467,7 +467,7 @@ void __fastcall TMainForm::FormShow(TObject *)
 				Session->Open();
 
 				theDatabase->Open();
-				activeUserQuery->Params->Items[0]->AsString = "CRESD";
+				activeUserQuery->Params->Items[0]->AsString = "GAK";
 				activeUserQuery->Open();
 			}
 			catch( ... )
@@ -481,7 +481,7 @@ void __fastcall TMainForm::FormShow(TObject *)
 				Session->Open();
 
 				theDatabase->Open();
-				activeUserQuery->Params->Items[0]->AsString = "CRESD";
+				activeUserQuery->Params->Items[0]->AsString = "GAK";
 				activeUserQuery->Open();
 			}
 			activeUserQuery->Close();
@@ -494,7 +494,7 @@ void __fastcall TMainForm::FormShow(TObject *)
 			Session->Open();
 
 			theDatabase->Open();
-			activeUserQuery->Params->Items[0]->AsString = "CRESD";
+			activeUserQuery->Params->Items[0]->AsString = "GAK";
 			activeUserQuery->Open();
 			activeUserQuery->Close();
 		}
@@ -503,7 +503,7 @@ void __fastcall TMainForm::FormShow(TObject *)
 			Session->Open();
 
 			theDatabase->Open();
-			activeUserQuery->Params->Items[0]->AsString = "CRESD";
+			activeUserQuery->Params->Items[0]->AsString = "GAK";
 			activeUserQuery->Open();
 			activeUserQuery->Close();
 		}
