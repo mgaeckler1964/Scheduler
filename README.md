@@ -17,6 +17,6 @@ A setup can be downloaded from my website
 
 https://www.gaeckler.at/Software/software.htm
 
-##Screenshot
+## Screenshot
 
 ![screen](https://github.com/user-attachments/assets/0c89264e-89a5-4583-97c4-cb8b2d1e3118)
