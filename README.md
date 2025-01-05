@@ -15,7 +15,7 @@ The Android Version was used with an HTC Desire.
 
 A setup can be downloaded from my website
 
-https://www.gaeckler.at/Software/software.htm
+https://www.gaeckler.at/Software/software.htm#Scheduler
 
 ## Screenshot
 
