@@ -1,7 +1,7 @@
 object ScheduleForm: TScheduleForm
   Tag = 4
-  Left = 639
-  Top = 374
+  Left = 388
+  Top = 379
   Width = 692
   Height = 540
   Caption = 'Termine'

@@ -110,27 +110,27 @@ __published:	// IDE-managed Components
 	void __fastcall ButtonNoTaskClick(TObject *Sender);
 	void __fastcall AlarmBeforeDBEditChange(TObject *Sender);
 private:	// User declarations
-	long	actualDateId;
-	bool	readOnly;
-	long	userId;
+	long	m_actualDateId;
+	bool	m_readOnly;
+	long	m_userId;
 public:		// User declarations
 	__fastcall TEditDateDialog(TComponent* Owner);
 	void setActualDate( long theDateId, bool readOnly )
 	{
-		actualDateId = theDateId;
-		this->readOnly = readOnly;
+		m_actualDateId = theDateId;
+		m_readOnly = readOnly;
 	}
 	void setNewDate( void )
 	{
-		actualDateId = 0;
+		m_actualDateId = 0;
 	}
 	long getNewDate( void ) const
 	{
-		return actualDateId;
+		return m_actualDateId;
 	}
 	int ShowModal( long userId )
 	{
-		this->userId = userId;
+		m_userId = userId;
 		return TForm::ShowModal();
 	}
 };

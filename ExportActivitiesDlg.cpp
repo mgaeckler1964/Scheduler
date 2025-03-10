@@ -98,7 +98,7 @@ int __fastcall TExportActivitiesDialog::Show( const AnsiString &selProject, TDat
 	// setup other options
 	TRegistry		*registry = new TRegistry;
 
-	if( registry->OpenKey( registryKey, false ) )
+	if( registry->OpenKey( REGISTRY_KEY, false ) )
 	{
 		if(  registry->ValueExists( "ExportActivitiesPath" ) )
 			SaveDialog->InitialDir = registry->ReadString( "ExportActivitiesPath" );
@@ -136,7 +136,7 @@ void __fastcall TExportActivitiesDialog::ButtonOkClick(TObject *)
 {
 	TRegistry	*registry = new TRegistry;
 
-	if( registry->OpenKey( registryKey, true ) )
+	if( registry->OpenKey( REGISTRY_KEY, true ) )
 	{
 		AnsiString	ExportActivitiesPath = FileEdit->Text;
 		int			lastPos = ExportActivitiesPath.LastDelimiter( "\\" );

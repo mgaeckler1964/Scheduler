@@ -157,7 +157,7 @@ void TScheduleForm::importOutlook( void )
 
 	TRegistry	  	*registry = new TRegistry;
 
-	if( registry->OpenKey( registryKey, false )
+	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "OutlookPath" ) )
 	{
 		OpenDialog->InitialDir = registry->ReadString( "OutlookPath" );
@@ -169,7 +169,7 @@ void TScheduleForm::importOutlook( void )
 	{
 		char	*dbFile = OpenDialog->FileName.c_str();
 
-		if( registry->OpenKey( registryKey, true ) )
+		if( registry->OpenKey( REGISTRY_KEY, true ) )
 		{
 			AnsiString	OutlookPath = OpenDialog->FileName;
 			int			lastPos = OutlookPath.LastDelimiter( "\\" );
@@ -265,7 +265,7 @@ void TScheduleForm::exportOutlook( TQuery *datesSQL )
 
 	TRegistry	*registry = new TRegistry;
 
-	if( registry->OpenKey( registryKey, false )
+	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "OutlookPath" ) )
 	{
 		SaveDialog->InitialDir = registry->ReadString( "OutlookPath" );
@@ -278,7 +278,7 @@ void TScheduleForm::exportOutlook( TQuery *datesSQL )
 	{
 		char *dbFile = SaveDialog->FileName.c_str();
 
-		if( registry->OpenKey( registryKey, true ) )
+		if( registry->OpenKey( REGISTRY_KEY, true ) )
 		{
 			AnsiString	OutlookPath = SaveDialog->FileName;
 			int			lastPos = OutlookPath.LastDelimiter( "\\" );
@@ -374,7 +374,7 @@ void TScheduleForm::importCasio( void )
 {
 	TRegistry	*registry = new TRegistry;
 
-	if( registry->OpenKey( registryKey, false )
+	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "CasioPath" ) )
 	{
 		OpenDialog->InitialDir = registry->ReadString( "CasioPath" );
@@ -393,7 +393,7 @@ void TScheduleForm::importCasio( void )
 		TDateTime		startDate, endDate, alarmDate;
 		int				alarmBefore;
 
-		if( registry->OpenKey( registryKey, true ) )
+		if( registry->OpenKey( REGISTRY_KEY, true ) )
 		{
 			AnsiString	CasioPath = OpenDialog->FileName;
 			int			lastPos = CasioPath.LastDelimiter( "\\" );
@@ -462,7 +462,7 @@ void TScheduleForm::exportCasio( TQuery *datesSQL )
 
 	TRegistry	*registry = new TRegistry;
 
-	if( registry->OpenKey( registryKey, false )
+	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "CasioPath" ) )
 	{
 		SaveDialog->InitialDir = registry->ReadString( "CasioPath" );
@@ -477,7 +477,7 @@ void TScheduleForm::exportCasio( TQuery *datesSQL )
 		TDateTime		theDate;
 		unsigned short	hour, minute, dummy;
 
-		if( registry->OpenKey( registryKey, true ) )
+		if( registry->OpenKey( REGISTRY_KEY, true ) )
 		{
 			AnsiString	CasioPath = SaveDialog->FileName;
 			int			lastPos = CasioPath.LastDelimiter( "\\" );
@@ -896,8 +896,24 @@ void __fastcall TScheduleForm::theTimerTimer(TObject *)
 			}
 			else
 			{
-				AlarmDialog->RedoUnitCombo->ItemIndex = 0;
-				AlarmDialog->RedoEdit->Text = "";
+				TRegistry	*reg = new TRegistry;
+
+				if( reg->OpenKey( REGISTRY_KEY, false ) )
+				{
+					if( reg->ValueExists( "Redo" ) )
+						AlarmDialog->RedoEdit->Text = reg->ReadString( "Redo" );
+					else
+						AlarmDialog->RedoEdit->Text = "";
+
+					if( reg->ValueExists( "RedoUnit" ) )
+						AlarmDialog->RedoUnitCombo->ItemIndex = reg->ReadInteger( "RedoUnit" );
+					else
+						AlarmDialog->RedoUnitCombo->ItemIndex = 0;
+
+					reg->CloseKey();
+				}
+
+				delete reg;
 
 				title.Insert( "Überfällig: ", 1 );
 				description.Insert( "Überfällig: ", 1 );
@@ -908,6 +924,21 @@ void __fastcall TScheduleForm::theTimerTimer(TObject *)
 			redoTime = atol( AlarmDialog->RedoEdit->Text.c_str() );
 			if( alarmButton == mrOk && redoTime > 0 )
 			{
+
+				TRegistry	*reg = new TRegistry;
+
+				if( reg->OpenKey( REGISTRY_KEY, true ) )
+				{
+					reg->WriteString( "Redo", AlarmDialog->RedoEdit->Text );
+					reg->WriteInteger("RedoUnit", AlarmDialog->RedoUnitCombo->ItemIndex);
+
+					reg->CloseKey();
+				}
+
+				delete reg;
+
+
+
 				now = Now();
 				if( AlarmDialog->RedoUnitCombo->ItemIndex == 0 ) // Minutes
 					now += EncodeTime( 0, (Word)redoTime, 0, 0 );

@@ -64,7 +64,7 @@ using namespace vcl;
 //---------------------------------------------------------------------------
 
 
-char *registryKey = "\\Software\\gak\\Scheduler";
+char REGISTRY_KEY[] = "\\Software\\gak\\Scheduler";
 TMainForm *MainForm;
 //---------------------------------------------------------------------------
 __fastcall TMainForm::TMainForm(TComponent* Owner)
@@ -384,7 +384,7 @@ void __fastcall TMainForm::FormShow(TObject *)
 
 	TRegistry	*reg = new TRegistry;
 
-	if( reg->OpenKey( registryKey, false ) )
+	if( reg->OpenKey( REGISTRY_KEY, false ) )
 	{
 		if( reg->ValueExists( "Database" ) )
 			dbType = reg->ReadInteger( "Database" );

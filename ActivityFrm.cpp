@@ -885,7 +885,7 @@ void __fastcall TActivityForm::ExportCSVClick(TObject *)
 
 	TMainForm::	setDateFormats();
 
-	if( registry->OpenKey( registryKey, false ) )
+	if( registry->OpenKey( REGISTRY_KEY, false ) )
 	{
 		if(  registry->ValueExists( "ExportActivitiesPath" ) )
 			SaveDialog->InitialDir = registry->ReadString( "ExportActivitiesPath" );
@@ -921,7 +921,7 @@ void __fastcall TActivityForm::ExportCSVClick(TObject *)
 			);
 		}
 
-		if( registry->OpenKey( registryKey, true ) )
+		if( registry->OpenKey( REGISTRY_KEY, true ) )
 		{
 			int lastPos = ExportActivitiesPath.LastDelimiter( "\\" );
 
@@ -989,7 +989,7 @@ void __fastcall TActivityForm::ImportCSVClick(TObject *)
 
 	TRegistry 	*registry = new TRegistry;
 
-	if( registry->OpenKey( registryKey, false ) )
+	if( registry->OpenKey( REGISTRY_KEY, false ) )
 	{
 		if(  registry->ValueExists( "ExportActivitiesPath" ) )
 			OpenDialog->InitialDir = registry->ReadString( "ExportActivitiesPath" );
@@ -1146,7 +1146,7 @@ void __fastcall TActivityForm::ImportCSVClick(TObject *)
 		}
 
 
-		if( registry->OpenKey( registryKey, true ) )
+		if( registry->OpenKey( REGISTRY_KEY, true ) )
 		{
 			int lastPos = ExportActivitiesPath.LastDelimiter( "\\" );
 
@@ -1442,7 +1442,7 @@ void __fastcall TActivityForm::ExportAufgaben1Click(TObject *)
 {
 	TRegistry	*registry = new TRegistry;
 
-	if( registry->OpenKey( registryKey, false )
+	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "TaskPath" ) )
 	{
 		SaveDialog->InitialDir = registry->ReadString( "TaskPath" );
@@ -1454,7 +1454,7 @@ void __fastcall TActivityForm::ExportAufgaben1Click(TObject *)
 	{
 		char *dbFile = SaveDialog->FileName.c_str();
 
-		if( registry->OpenKey( registryKey, true ) )
+		if( registry->OpenKey( REGISTRY_KEY, true ) )
 		{
 			AnsiString	TaskPath = SaveDialog->FileName;
 			registry->WriteString( "TaskFile", TaskPath );
@@ -1622,7 +1622,7 @@ void __fastcall TActivityForm::ImportTtigkeiten1Click(TObject *)
 {
 	TRegistry	*registry = new TRegistry;
 
-	if( registry->OpenKey( registryKey, false )
+	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "ActivityPath" ) )
 	{
 		OpenDialog->InitialDir = registry->ReadString( "ActivityPath" );
@@ -1633,7 +1633,7 @@ void __fastcall TActivityForm::ImportTtigkeiten1Click(TObject *)
 	if( OpenDialog->Execute() )
 	{
 		AnsiString	ActivityFile = OpenDialog->FileName;
-		if( registry->OpenKey( registryKey, true ) )
+		if( registry->OpenKey( REGISTRY_KEY, true ) )
 		{
 			registry->WriteString( "ActivityFile", ActivityFile );
 

@@ -1,7 +1,7 @@
 object ActivityForm: TActivityForm
   Tag = 1
-  Left = 430
-  Top = 439
+  Left = 2030
+  Top = 300
   Width = 581
   Height = 495
   Caption = 'Tätigkeiten'
@@ -25,7 +25,7 @@ object ActivityForm: TActivityForm
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 573
+    Width = 565
     Height = 73
     Align = alTop
     BevelOuter = bvNone
@@ -159,8 +159,8 @@ object ActivityForm: TActivityForm
   object DBGridActivities: TDBGrid
     Left = 0
     Top = 73
-    Width = 573
-    Height = 376
+    Width = 565
+    Height = 363
     Align = alClient
     DataSource = ActivitySqlSource
     ReadOnly = True

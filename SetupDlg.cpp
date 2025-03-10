@@ -52,7 +52,7 @@ void __fastcall TSetupDialog::FormCreate(TObject *)
 {
 	TRegistry	*reg = new TRegistry;
 
-	if( reg->OpenKey( registryKey, false ) )
+	if( reg->OpenKey( REGISTRY_KEY, false ) )
 	{
 		if( reg->ValueExists( "AutoActivity" ) )
 			AutoActivityCheckBox->Checked = reg->ReadBool( "AutoActivity" );
@@ -101,7 +101,7 @@ void __fastcall TSetupDialog::ButtonOKClick(TObject *)
 {
 	TRegistry	*reg = new TRegistry;
 
-	reg->OpenKey( registryKey, true );
+	reg->OpenKey( REGISTRY_KEY, true );
 	reg->WriteBool( "AutoActivity", AutoActivityCheckBox->Checked );
 	reg->WriteInteger( "Database", DatabaseRadioGroup->ItemIndex );
 	reg->WriteBool( "MobileServer", CheckBoxMobileServer->Checked );
@@ -125,7 +125,7 @@ void __fastcall TSetupDialog::ButtonCancelClick(TObject *)
 {
 	TRegistry	*reg = new TRegistry;
 
-	if( reg->OpenKey( registryKey, false ) )
+	if( reg->OpenKey( REGISTRY_KEY, false ) )
 	{
 		if( reg->ValueExists( "AutoActivity" ) )
 			AutoActivityCheckBox->Checked = reg->ReadBool( "AutoActivity" );

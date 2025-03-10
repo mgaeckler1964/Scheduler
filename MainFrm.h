@@ -142,7 +142,7 @@ public:		// User declarations
 	}
 };
 //---------------------------------------------------------------------------
-extern char *registryKey;
+extern char REGISTRY_KEY[];
 extern PACKAGE TMainForm *MainForm;
 //---------------------------------------------------------------------------
 #endif

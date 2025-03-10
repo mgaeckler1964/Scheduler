@@ -120,7 +120,7 @@ static void saveActiveChild( void )
 	}
 	TRegistry	*reg = new TRegistry;
 
-	reg->OpenKey( registryKey, true );
+	reg->OpenKey( REGISTRY_KEY, true );
 	if( MainForm->ActiveMDIChild )
 	{
 		reg->WriteInteger( "ActiveChild", MainForm->ActiveMDIChild->Tag );
@@ -142,7 +142,7 @@ static void reactivateChild( void )
 	T_STRING		usersToOpen;
 	TRegistry		*reg = new TRegistry;
 
-	if( reg->OpenKey( registryKey, false ) )
+	if( reg->OpenKey( REGISTRY_KEY, false ) )
 	{
 		if( reg->ValueExists("ActiveChild") )
 			theChildTag = reg->ReadInteger( "ActiveChild" );

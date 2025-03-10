@@ -50,7 +50,7 @@ TEditDateDialog *EditDateDialog;
 __fastcall TEditDateDialog::TEditDateDialog(TComponent* Owner)
 	: TForm(Owner)
 {
-	actualDateId = 0;
+	m_actualDateId = 0;
 }
 //---------------------------------------------------------------------------
 static inline TDateTime GetDate( TDateTime theDate )
@@ -68,7 +68,7 @@ static inline TDateTime GetTime( TDateTime theDate )
 
 void __fastcall TEditDateDialog::ButtonOkClick(TObject *)
 {
-	if( readOnly )
+	if( m_readOnly )
 /*@*/	return;
 
 	TDateTime	theDate;
@@ -78,12 +78,12 @@ void __fastcall TEditDateDialog::ButtonOkClick(TObject *)
 	theDate = GetDate(endDatePicker->Date) + GetTime(endTimePicker->Time);
 	ScheduleTable->FieldByName( "EndDate" )->AsDateTime = theDate;
 
-	if( !actualDateId )
+	if( !m_actualDateId )
 	{
-		actualDateId = getNewMaxValue(
+		m_actualDateId = getNewMaxValue(
 			"SchedulerDB", "SCHEDULE", "ID"
 		);
-		ScheduleTableID->AsInteger = actualDateId;
+		ScheduleTableID->AsInteger = m_actualDateId;
 	}
 
 	ScheduleTable->Post();
@@ -109,14 +109,14 @@ void __fastcall TEditDateDialog::FormShow(TObject *)
 
 	ProjectQuery->Open();
 
-	RequiredQuery->ParamByName( "theUser" )->AsInteger = userId;
+	RequiredQuery->ParamByName( "theUser" )->AsInteger = m_userId;
 	RequiredQuery->Open();
 
-	if( actualDateId )
+	if( m_actualDateId )
 	{
 		AnsiString	filter;
 
-		filter.printf( "ID = %ld", actualDateId );
+		filter.printf( "ID = %ld", m_actualDateId );
 		ScheduleTable->Filter = filter;
 		ScheduleTable->Filtered = true;
 	}
@@ -124,13 +124,13 @@ void __fastcall TEditDateDialog::FormShow(TObject *)
 		ScheduleTable->Filtered = false;
 
 
-	ButtonOk->Enabled = !readOnly;
-	ButtonNoTask->Enabled = !readOnly;
+	ButtonOk->Enabled = !m_readOnly;
+	ButtonNoTask->Enabled = !m_readOnly;
 
 	ScheduleTable->Open();
-	if( actualDateId )
+	if( m_actualDateId )
 	{
-		if( !readOnly )
+		if( !m_readOnly )
 			ScheduleTable->Edit();
 		theDate = ScheduleTable->FieldByName( "StartDate" )->AsDateTime;
 		startDatePicker->Date = theDate;
@@ -151,7 +151,7 @@ void __fastcall TEditDateDialog::FormShow(TObject *)
 		endTimePicker->Time = theDate;
 
 		ScheduleTable->Insert();
-		ScheduleTable->FieldByName( "userid" )->AsInteger = userId;
+		ScheduleTable->FieldByName( "userid" )->AsInteger = m_userId;
 		AlarmUnitComboBox->ItemIndex = -1;
 		//EffortUnitComboBox->ItemIndex = 0;
 		ScheduleTable->FieldByName( "EffortUnit" )->AsString = _EffortUnitComboBox->Items->Strings[0];
