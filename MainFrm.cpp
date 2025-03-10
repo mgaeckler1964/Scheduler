@@ -82,7 +82,7 @@ int TMainForm::loadPermissions( int schedulerId )
 		userPermissions = -1;
 	else
 	{
-		TQuery *theQuery = new TQuery( NULL );
+		std::auto_ptr<TQuery> theQuery(new TQuery(NULL));
 		theQuery->DatabaseName = theDatabase->DatabaseName;
 		theQuery->SQL->Add(
 			"select permissions "
@@ -103,8 +103,6 @@ int TMainForm::loadPermissions( int schedulerId )
 		for( theQuery->Open(); !theQuery->Eof; theQuery->Next() )
 			userPermissions |= theQuery->Fields->Fields[0]->AsInteger;
 		theQuery->Close();
-
-		delete theQuery;
 	}
 	return userPermissions;
 }
@@ -382,7 +380,7 @@ void __fastcall TMainForm::FormShow(TObject *)
 
 	setDateFormats();
 
-	TRegistry	*reg = new TRegistry;
+	std::auto_ptr<TRegistry>	reg(new TRegistry());
 
 	if( reg->OpenKey( REGISTRY_KEY, false ) )
 	{
@@ -397,8 +395,6 @@ void __fastcall TMainForm::FormShow(TObject *)
 
 		reg->CloseKey();
 	}
-
-	delete reg;
 
 	GetUserName( ntUserName, &size );
 

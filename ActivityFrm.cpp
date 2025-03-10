@@ -65,7 +65,7 @@ static void exportTasksToStream( std::ostream &out, int userID )
 {
 	long	theId;
 	STRING	project, title;
-	TQuery	*datesQuery = new TQuery( Application );
+	std::auto_ptr<TQuery>	datesQuery(new TQuery( Application ));
 
 	datesQuery->DatabaseName = "SchedulerDB";
 
@@ -97,8 +97,6 @@ static void exportTasksToStream( std::ostream &out, int userID )
 				<< theId << "\"\n";
 	}
 	datesQuery->Close();
-
-	delete datesQuery;
 }
 
 //---------------------------------------------------------------------------
@@ -297,8 +295,8 @@ void TActivityForm::deleteActivities(
 	TDateTime 			maxDate
 )
 {
-	int			selProjectId = 0;
-	TQuery		*delSql = new TQuery( this );
+	int						selProjectId = 0;
+	std::auto_ptr<TQuery>	delSql(new TQuery( this ));
 
 	delSql->DatabaseName = "SchedulerDB";
 
@@ -341,8 +339,6 @@ void TActivityForm::deleteActivities(
 		delSql->ParamByName( "selProject" )->AsInteger = selProjectId;
 
 	delSql->ExecSQL();
-
-	delete delSql;
 }
 //---------------------------------------------------------------------------
 double TActivityForm::doExportProtocol(
@@ -742,7 +738,7 @@ void __fastcall TActivityForm::ExportProtocolClick(TObject *)
 				doExportProtocol( fp, selProject, roundValue, minDate, maxDate );
 			else
 			{
-				TQuery	*projectQuery = new TQuery( this );
+				std::auto_ptr<TQuery>	projectQuery(new TQuery( this ));
 				double	totalEffortThisMonth = 0.0;
 
 				projectQuery->SQL->Add(
@@ -772,8 +768,6 @@ void __fastcall TActivityForm::ExportProtocolClick(TObject *)
 				}
 
 				projectQuery->Close();
-
-				delete projectQuery;
 
 				fp << "Gesamtaufwand:" << ListSeparator << totalEffortThisMonth << "\n\n\n";
 			}
@@ -881,7 +875,7 @@ bool TActivityForm::testActivities( bool showOk )
 
 void __fastcall TActivityForm::ExportCSVClick(TObject *)
 {
-	TRegistry 	*registry = new TRegistry;
+	std::auto_ptr<TRegistry> registry(new TRegistry());
 
 	TMainForm::	setDateFormats();
 
@@ -935,8 +929,6 @@ void __fastcall TActivityForm::ExportCSVClick(TObject *)
 			registry->CloseKey();
 		}
 	}
-
-	delete registry;
 }
 //---------------------------------------------------------------------------
 
@@ -987,7 +979,7 @@ void __fastcall TActivityForm::ImportCSVClick(TObject *)
 		ScheduleInsertQuery->DatabaseName = "SchedulerDB";
 	}
 
-	TRegistry 	*registry = new TRegistry;
+	std::auto_ptr<TRegistry> registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false ) )
 	{
@@ -1160,8 +1152,6 @@ void __fastcall TActivityForm::ImportCSVClick(TObject *)
 			registry->CloseKey();
 		}
 	}
-
-	delete registry;
 }
 //---------------------------------------------------------------------------
 
@@ -1440,7 +1430,7 @@ void __fastcall TActivityForm::FormDestroy(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TActivityForm::ExportAufgaben1Click(TObject *)
 {
-	TRegistry	*registry = new TRegistry;
+	std::auto_ptr<TRegistry>	registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "TaskPath" ) )
@@ -1475,8 +1465,6 @@ void __fastcall TActivityForm::ExportAufgaben1Click(TObject *)
 
 		csvFile.close();
 	}
-
-	delete registry;
 }
 //---------------------------------------------------------------------------
 
@@ -1620,7 +1608,7 @@ STRING TActivityForm::importActivitiesFromStream( std::istream &csvFile )
 
 void __fastcall TActivityForm::ImportTtigkeiten1Click(TObject *)
 {
-	TRegistry	*registry = new TRegistry;
+	std::auto_ptr<TRegistry>	registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "ActivityPath" ) )
@@ -1666,8 +1654,6 @@ void __fastcall TActivityForm::ImportTtigkeiten1Click(TObject *)
 
 
 	} // if( OpenDialog->Execute() )
-
-	delete registry;
 }
 //---------------------------------------------------------------------------
 

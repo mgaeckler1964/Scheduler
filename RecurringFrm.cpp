@@ -153,8 +153,6 @@ __fastcall TRecurringForm::TRecurringForm(TComponent* Owner)
 //---------------------------------------------------------------------------
 void TRecurringForm::getRecurringSchedules( void )
 {
-	TQuery			*repResQuery;
-	TQuery			*reservatQuery;
 	TDateTime		today = TDateTime::CurrentDate();
 	TDateTime		maxDate = today + 366;
 	TDateTime		tmpDate, lastDate;
@@ -165,224 +163,210 @@ void TRecurringForm::getRecurringSchedules( void )
 	int				repeatMode, WeekDay, MonthDay, Month, counter, dow;
 	unsigned short	theDay, theMonth, theYear;
 
-	repResQuery = new TQuery( Application );
-	if( repResQuery )
+	std::auto_ptr<TQuery>	repResQuery(new TQuery( Application ));
+	std::auto_ptr<TQuery>	reservatQuery(new TQuery( Application ));
+
+	reservatQuery->DatabaseName = "SchedulerDB";
+	repResQuery->DatabaseName = "SchedulerDB";
+
+	reservatQuery->RequestLive = true;
+	repResQuery->RequestLive = true;
+
+	reservatQuery->SQL->Add( "select * from SCHEDULE "
+								"where USERID = :theUser");
+	reservatQuery->Params->Items[0]->AsInteger = userId;
+
+	repResQuery->SQL->Add( "select * from RECURRING "
+							"where (LETZTEREINTRAG is null or "
+							"LETZTEREINTRAG < :maxDate) and "
+							"USERID = :theUser" );
+	repResQuery->Params->Items[0]->AsDate = maxDate;
+	repResQuery->Params->Items[1]->AsInteger = userId;
+
+	//reservatQuery->UniDirectional = true;
+	//repResQuery->UniDirectional = true;
+
+	reservatQuery->Open();
+	repResQuery->Open();
+	rc = repResQuery->RecordCount;
+	for( i=0; i<rc; i++ )
+	//while( !repResQuery->Eof )		// did not work ?
 	{
-		reservatQuery = new TQuery( Application );
-		if( reservatQuery )
+		if( repResQuery->FieldByName( "LetzterEintrag" )->IsNull )
+			lastDate = TDateTime::CurrentDate();
+		else
+			lastDate = repResQuery->FieldByName( "LetzterEintrag" )->AsDateTime;
+
+		repeatMode	= repResQuery->FieldByName( "Wiederholung" )->AsInteger;
+		WeekDay		= repResQuery->FieldByName( "WochenTag" )->AsInteger;
+		MonthDay	= repResQuery->FieldByName( "MonatsTag" )->AsInteger;
+		Month		= repResQuery->FieldByName( "Monat" )->AsInteger;
+		counter		= repResQuery->FieldByName( "Zaehler" )->AsInteger;
+
+		while( lastDate < maxDate )
 		{
-			reservatQuery->DatabaseName = "SchedulerDB";
-			repResQuery->DatabaseName = "SchedulerDB";
-
-			reservatQuery->RequestLive = true;
-			repResQuery->RequestLive = true;
-
-			reservatQuery->SQL->Add( "select * from SCHEDULE "
-										"where USERID = :theUser");
-			reservatQuery->Params->Items[0]->AsInteger = userId;
-
-			repResQuery->SQL->Add( "select * from RECURRING "
-									"where (LETZTEREINTRAG is null or "
-									"LETZTEREINTRAG < :maxDate) and "
-									"USERID = :theUser" );
-			repResQuery->Params->Items[0]->AsDate = maxDate;
-			repResQuery->Params->Items[1]->AsInteger = userId;
-
-			//reservatQuery->UniDirectional = true;
-			//repResQuery->UniDirectional = true;
-
-			reservatQuery->Open();
-			repResQuery->Open();
-			rc = repResQuery->RecordCount;
-			for( i=0; i<rc; i++ )
-			//while( !repResQuery->Eof )		// did not work ?
+			// calculate the next ocurence of the reservation
+			switch( repeatMode )
 			{
-				if( repResQuery->FieldByName( "LetzterEintrag" )->IsNull )
-					lastDate = TDateTime::CurrentDate();
-				else
-					lastDate = repResQuery->FieldByName( "LetzterEintrag" )->AsDateTime;
-
-				repeatMode	= repResQuery->FieldByName( "Wiederholung" )->AsInteger;
-				WeekDay		= repResQuery->FieldByName( "WochenTag" )->AsInteger;
-				MonthDay	= repResQuery->FieldByName( "MonatsTag" )->AsInteger;
-				Month		= repResQuery->FieldByName( "Monat" )->AsInteger;
-				counter		= repResQuery->FieldByName( "Zaehler" )->AsInteger;
-
-				while( lastDate < maxDate )
+				case 0:		// dayly
 				{
-					// calculate the next ocurence of the reservation
-					switch( repeatMode )
+					lastDate += 1;
+					break;
+				}
+				case 1:		// weekly
+				{
+					// find next occurence of week day required
+
+					dow = lastDate.DayOfWeek();
+					if( dow < WeekDay )
+						lastDate += WeekDay - dow;
+					else
+						lastDate += 7 - (dow-WeekDay);
+					break;
+				}
+				case 2:		// two weekly
+				{
+					unsigned weekOfYear;
+
+					// find next occurence of week day required
+					dow = lastDate.DayOfWeek();
+					if( dow < WeekDay )
+						lastDate += WeekDay - dow;
+					else
+						lastDate += 7 - (dow-WeekDay);
+
+					// convert to my own date type
+					lastDate.DecodeDate( &theYear, &theMonth, &theDay );
+					gak::Date	myDate( theDay, gak::Date::Month(theMonth), theYear );
+
+					// check the week
+					weekOfYear = myDate.weekOfYear();
+
+					if( (!counter &&   weekOfYear % 2 )		// even weeks
+					||  ( counter && !(weekOfYear % 2)) )	// odd weeks
 					{
-						case 0:		// dayly
-						{
-							lastDate += 1;
-							break;
-						}
-						case 1:		// weekly
-						{
-							// find next occurence of week day required
-
-							dow = lastDate.DayOfWeek();
-							if( dow < WeekDay )
-								lastDate += WeekDay - dow;
-							else
-								lastDate += 7 - (dow-WeekDay);
-							break;
-						}
-						case 2:		// two weekly
-						{
-							unsigned weekOfYear;
-
-							// find next occurence of week day required
-							dow = lastDate.DayOfWeek();
-							if( dow < WeekDay )
-								lastDate += WeekDay - dow;
-							else
-								lastDate += 7 - (dow-WeekDay);
-
-							// convert to my own date type
-							lastDate.DecodeDate( &theYear, &theMonth, &theDay );
-							gak::Date	myDate( theDay, gak::Date::Month(theMonth), theYear );
-
-							// check the week
-							weekOfYear = myDate.weekOfYear();
-
-							if( (!counter &&   weekOfYear % 2 )		// even weeks
-							||  ( counter && !(weekOfYear % 2)) )	// odd weeks
-							{
-								lastDate += 7;		// next week
-							}
-							break;
-
-
-						}
-						case 3:		// monthly
-						{
-							if( !counter )
-							{
-								lastDate.DecodeDate( &theYear, &theMonth, &theDay );
-								if( theDay >= MonthDay )
-								{
-									nextMonth( &theYear, &theMonth );
-								}
-								lastDate = EncodeDate( theYear, theMonth, (unsigned short)MonthDay );
-							}
-							else
-							{
-								tmpDate = findDayOfMonth( lastDate, counter, WeekDay );
-								while( tmpDate <= lastDate || tmpDate <= today )
-									tmpDate = findDayOfMonth( nextMonth( tmpDate ), counter, WeekDay );
-								lastDate = tmpDate;
-							}
-							break;
-						}
-						case 4:		// jährlich
-						{
-							lastDate.DecodeDate( &theYear, &theMonth, &theDay );
-							if( !counter )
-							{
-								tmpDate = EncodeDate( theYear, (unsigned short)Month, (unsigned short)MonthDay );
-								if( tmpDate <= lastDate )
-								{
-									theYear++;
-									lastDate = EncodeDate( theYear, (unsigned short)Month, (unsigned short)MonthDay );
-								}
-								else
-									lastDate = tmpDate;
-							}
-							else
-							{
-								tmpDate = findDayOfMonth( EncodeDate( theYear, (unsigned short)Month, 1 ), counter, WeekDay );
-								while( tmpDate <= lastDate || tmpDate <= today )
-									tmpDate = findDayOfMonth( nextYear( tmpDate ), counter, WeekDay );
-								lastDate = tmpDate;
-							}
-							break;
-						}
+						lastDate += 7;		// next week
 					}
-					if( lastDate > today )
-					{
-						reservatQuery->Insert();
-						reservatQuery->FieldByName( "ID" )->AsInteger =
-							getNewMaxValue(
-								"SchedulerDB", "SCHEDULE", "ID"
-							)
-						;
-						reservatQuery->FieldByName( "UserId" )->AsInteger = userId;
-						reservatQuery->FieldByName( "StartDate" )->AsDateTime = lastDate + repResQuery->FieldByName( "UhrzeitAnfang" )->AsDateTime;
-						reservatQuery->FieldByName( "EndDate" )->AsDateTime = reservatQuery->FieldByName( "StartDate" )->AsDateTime + repResQuery->FieldByName( "DauerTage" )->AsInteger + repResQuery->FieldByName( "DauerStunden" )->AsDateTime;
-						reservatQuery->FieldByName( "Title" )->AsString = repResQuery->FieldByName( "Title" )->AsString;
-						reservatQuery->FieldByName( "Location" )->AsString = repResQuery->FieldByName( "Location" )->AsString;
-						reservatQuery->FieldByName( "Description" )->AsString = repResQuery->FieldByName( "Description" )->AsString;
-						reservatQuery->FieldByName( "Command" )->AsString = repResQuery->FieldByName( "Command" )->AsString;
-						reservatQuery->FieldByName( "AlarmUnit" )->AsString = repResQuery->FieldByName( "AlarmUnit" )->AsString;
-						reservatQuery->FieldByName( "AlarmBefore" )->AsInteger = repResQuery->FieldByName( "AlarmBefore" )->AsInteger;
-						reservatQuery->FieldByName( "RecurringId" )->AsInteger = repResQuery->FieldByName( "ID")->AsInteger;
+					break;
 
-						AlarmBefore = (WORD)repResQuery->FieldByName( "AlarmBefore" )->AsInteger;
-						if( AlarmBefore > 0 )
+
+				}
+				case 3:		// monthly
+				{
+					if( !counter )
+					{
+						lastDate.DecodeDate( &theYear, &theMonth, &theDay );
+						if( theDay >= MonthDay )
 						{
-							AlarmDate = reservatQuery->FieldByName( "StartDate" )->AsDateTime;
-							if( reservatQuery->FieldByName( "AlarmUnit" )->AsString == "Minuten" )
-							{
-								tmp = EncodeTime( 0, AlarmBefore, 0, 0 );
-								AlarmDate -= tmp;
-							}
-							else if( reservatQuery->FieldByName( "AlarmUnit" )->AsString == "Stunden" )
-							{
-								tmp = EncodeTime( AlarmBefore, 0, 0, 0 );
-								AlarmDate -= tmp;
-							}
-							else if( reservatQuery->FieldByName( "AlarmUnit" )->AsString == "Tage" )
-							{
-								AlarmDate -= AlarmBefore;
-							}
-							else if( reservatQuery->FieldByName( "AlarmUnit" )->AsString == "Wochen" )
-							{
-									AlarmDate -= 7*AlarmBefore;
-							}
-							reservatQuery->FieldByName( "AlarmDate" )->AsDateTime = AlarmDate;
+							nextMonth( &theYear, &theMonth );
+						}
+						lastDate = EncodeDate( theYear, theMonth, (unsigned short)MonthDay );
+					}
+					else
+					{
+						tmpDate = findDayOfMonth( lastDate, counter, WeekDay );
+						while( tmpDate <= lastDate || tmpDate <= today )
+							tmpDate = findDayOfMonth( nextMonth( tmpDate ), counter, WeekDay );
+						lastDate = tmpDate;
+					}
+					break;
+				}
+				case 4:		// jährlich
+				{
+					lastDate.DecodeDate( &theYear, &theMonth, &theDay );
+					if( !counter )
+					{
+						tmpDate = EncodeDate( theYear, (unsigned short)Month, (unsigned short)MonthDay );
+						if( tmpDate <= lastDate )
+						{
+							theYear++;
+							lastDate = EncodeDate( theYear, (unsigned short)Month, (unsigned short)MonthDay );
 						}
 						else
-						{
-							reservatQuery->FieldByName( "AlarmBefore" )->Clear();
-							reservatQuery->FieldByName( "AlarmDate" )->Clear();
-						}
-
-						reservatQuery->Post();
+							lastDate = tmpDate;
 					}
+					else
+					{
+						tmpDate = findDayOfMonth( EncodeDate( theYear, (unsigned short)Month, 1 ), counter, WeekDay );
+						while( tmpDate <= lastDate || tmpDate <= today )
+							tmpDate = findDayOfMonth( nextYear( tmpDate ), counter, WeekDay );
+						lastDate = tmpDate;
+					}
+					break;
+				}
+			}
+			if( lastDate > today )
+			{
+				reservatQuery->Insert();
+				reservatQuery->FieldByName( "ID" )->AsInteger =
+					getNewMaxValue(
+						"SchedulerDB", "SCHEDULE", "ID"
+					)
+				;
+				reservatQuery->FieldByName( "UserId" )->AsInteger = userId;
+				reservatQuery->FieldByName( "StartDate" )->AsDateTime = lastDate + repResQuery->FieldByName( "UhrzeitAnfang" )->AsDateTime;
+				reservatQuery->FieldByName( "EndDate" )->AsDateTime = reservatQuery->FieldByName( "StartDate" )->AsDateTime + repResQuery->FieldByName( "DauerTage" )->AsInteger + repResQuery->FieldByName( "DauerStunden" )->AsDateTime;
+				reservatQuery->FieldByName( "Title" )->AsString = repResQuery->FieldByName( "Title" )->AsString;
+				reservatQuery->FieldByName( "Location" )->AsString = repResQuery->FieldByName( "Location" )->AsString;
+				reservatQuery->FieldByName( "Description" )->AsString = repResQuery->FieldByName( "Description" )->AsString;
+				reservatQuery->FieldByName( "Command" )->AsString = repResQuery->FieldByName( "Command" )->AsString;
+				reservatQuery->FieldByName( "AlarmUnit" )->AsString = repResQuery->FieldByName( "AlarmUnit" )->AsString;
+				reservatQuery->FieldByName( "AlarmBefore" )->AsInteger = repResQuery->FieldByName( "AlarmBefore" )->AsInteger;
+				reservatQuery->FieldByName( "RecurringId" )->AsInteger = repResQuery->FieldByName( "ID")->AsInteger;
+
+				AlarmBefore = (WORD)repResQuery->FieldByName( "AlarmBefore" )->AsInteger;
+				if( AlarmBefore > 0 )
+				{
+					AlarmDate = reservatQuery->FieldByName( "StartDate" )->AsDateTime;
+					if( reservatQuery->FieldByName( "AlarmUnit" )->AsString == "Minuten" )
+					{
+						tmp = EncodeTime( 0, AlarmBefore, 0, 0 );
+						AlarmDate -= tmp;
+					}
+					else if( reservatQuery->FieldByName( "AlarmUnit" )->AsString == "Stunden" )
+					{
+						tmp = EncodeTime( AlarmBefore, 0, 0, 0 );
+						AlarmDate -= tmp;
+					}
+					else if( reservatQuery->FieldByName( "AlarmUnit" )->AsString == "Tage" )
+					{
+						AlarmDate -= AlarmBefore;
+					}
+					else if( reservatQuery->FieldByName( "AlarmUnit" )->AsString == "Wochen" )
+					{
+							AlarmDate -= 7*AlarmBefore;
+					}
+					reservatQuery->FieldByName( "AlarmDate" )->AsDateTime = AlarmDate;
+				}
+				else
+				{
+					reservatQuery->FieldByName( "AlarmBefore" )->Clear();
+					reservatQuery->FieldByName( "AlarmDate" )->Clear();
 				}
 
-				repResQuery->Edit();
-				repResQuery->FieldByName( "LetzterEintrag" )->AsDateTime = lastDate;
-				repResQuery->Post();
-
-				repResQuery->Next();
+				reservatQuery->Post();
 			}
-
-			reservatQuery->Close();
-			repResQuery->Close();
-
-			delete reservatQuery;
 		}
-		delete repResQuery;
+
+		repResQuery->Edit();
+		repResQuery->FieldByName( "LetzterEintrag" )->AsDateTime = lastDate;
+		repResQuery->Post();
+
+		repResQuery->Next();
 	}
+
+	reservatQuery->Close();
+	repResQuery->Close();
 }
 //---------------------------------------------------------------------------
 void TRecurringForm::removeSchedules( void )
 {
-	TQuery	*delSql;
+	std::auto_ptr<TQuery>	delSql(new TQuery( Application ));
 
-	delSql = new TQuery( Application );
-	if( delSql )
-	{
-		delSql->DatabaseName = "SchedulerDB";
-		delSql->SQL->Add( "delete from schedule where recurringId = :theId" );
-		delSql->Params->Items[0]->AsInteger = RecurringQuery->FieldByName( "ID" )->AsInteger;
-		delSql->ExecSQL();
-
-		delete delSql;
-	}
+	delSql->DatabaseName = "SchedulerDB";
+	delSql->SQL->Add( "delete from schedule where recurringId = :theId" );
+	delSql->Params->Items[0]->AsInteger = RecurringQuery->FieldByName( "ID" )->AsInteger;
+	delSql->ExecSQL();
 }
 //---------------------------------------------------------------------------
 void TRecurringForm::enableDisableControls( void )

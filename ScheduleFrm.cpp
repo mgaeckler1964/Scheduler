@@ -155,7 +155,7 @@ void TScheduleForm::importOutlook( void )
 	TDateTime	  	startDate, endDate, alarmDate;
 	double		  	alarmBefore;
 
-	TRegistry	  	*registry = new TRegistry;
+	std::auto_ptr<TRegistry>	registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "OutlookPath" ) )
@@ -247,8 +247,6 @@ void TScheduleForm::importOutlook( void )
 
 		csvFile.close();
 	}
-
-	delete registry;
 }
 
 //---------------------------------------------------------------------------
@@ -263,7 +261,7 @@ void TScheduleForm::exportOutlook( TQuery *datesSQL )
 
 	TDateTime	theDate;
 
-	TRegistry	*registry = new TRegistry;
+	std::auto_ptr<TRegistry> registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "OutlookPath" ) )
@@ -366,13 +364,11 @@ endTime = buffer;
 			csvFile.close();
 		}
 	}
-
-	delete registry;
 }
 //---------------------------------------------------------------------------
 void TScheduleForm::importCasio( void )
 {
-	TRegistry	*registry = new TRegistry;
+	std::auto_ptr<TRegistry> registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "CasioPath" ) )
@@ -451,8 +447,6 @@ void TScheduleForm::importCasio( void )
 
 		dbaseTable->Close();
 	}
-
-	delete registry;
 }
 
 //---------------------------------------------------------------------------
@@ -460,7 +454,7 @@ void TScheduleForm::exportCasio( TQuery *datesSQL )
 {
 	long		maxId = getLastExport(), theId;
 
-	TRegistry	*registry = new TRegistry;
+	std::auto_ptr<TRegistry> registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "CasioPath" ) )
@@ -530,8 +524,6 @@ void TScheduleForm::exportCasio( TQuery *datesSQL )
 		updateUserSQL->Params->Items[1]->AsInteger = userId;
 		updateUserSQL->ExecSQL();
 	}
-
-	delete registry;
 }
 
 //---------------------------------------------------------------------------
@@ -572,26 +564,20 @@ void __fastcall TScheduleForm::TerminLschenClick(TObject *)
 	if( readOnly )
 /*@*/	return;
 
-	TQuery	*delSQL;
-
 	if( Application->MessageBox(
 						"Wollen Sie den Termin löschen?",
 						"Achtung",
 						MB_YESNO|MB_ICONQUESTION ) == IDYES )
 	{
-		delSQL = new TQuery( Application );
-		if( delSQL )
-		{
-			delSQL->DatabaseName = "SchedulerDB";
-			delSQL->SQL->Add( "delete from schedule where id = :theId" );
-			delSQL->Params->Items[0]->AsInteger = datesQuery->FieldByName( "id" )->AsInteger;
+		std::auto_ptr<TQuery>	delSQL(new TQuery( Application ) );
 
-			delSQL->ExecSQL();
+		delSQL->DatabaseName = "SchedulerDB";
+		delSQL->SQL->Add( "delete from schedule where id = :theId" );
+		delSQL->Params->Items[0]->AsInteger = datesQuery->FieldByName( "id" )->AsInteger;
 
-			delete delSQL;
+		delSQL->ExecSQL();
 
-			ReloadTable();
-		}
+		ReloadTable();
 	}
 }
 
@@ -719,37 +705,31 @@ void __fastcall TScheduleForm::BitBtnDeleteAllClick(TObject *)
 	if( readOnly )
 /*@*/	return;
 
-	TQuery	*delSQL;
-
 	if( Application->MessageBox(
 						"Wollen Sie alle alte Termine löschen?",
 						"Achtung",
 						MB_YESNO|MB_ICONQUESTION ) == IDYES )
 	{
-		delSQL = new TQuery( Application );
-		if( delSQL )
-		{
-			delSQL->DatabaseName = "SchedulerDB";
-			delSQL->SQL->Add( "delete from schedule s where s.userId = :theUser and s.EndDate < :today" );
-			delSQL->SQL->Add( "and not exists ("
-									"select * from activities a where a.task = s.id"
-								")" );
-			delSQL->Params->Items[0]->AsInteger = userId;
-			delSQL->Params->Items[1]->AsDateTime = Sysutils::Date();
+		std::auto_ptr<TQuery>	delSQL(new TQuery( Application ));
 
-			delSQL->ExecSQL();
+		delSQL->DatabaseName = "SchedulerDB";
+		delSQL->SQL->Add( "delete from schedule s where s.userId = :theUser and s.EndDate < :today" );
+		delSQL->SQL->Add( "and not exists ("
+								"select * from activities a where a.task = s.id"
+							")" );
+		delSQL->Params->Items[0]->AsInteger = userId;
+		delSQL->Params->Items[1]->AsDateTime = Sysutils::Date();
 
-			int			changed = delSQL->RowsAffected;
-			AnsiString	changedStr = IntToStr( changed ) + " Zeile(n) gelöscht.";
-			Application->MessageBox(
-						changedStr.c_str(),
-						"Scheduler",
-						MB_ICONINFORMATION );
+		delSQL->ExecSQL();
 
-			delete delSQL;
+		int			changed = delSQL->RowsAffected;
+		AnsiString	changedStr = IntToStr( changed ) + " Zeile(n) gelöscht.";
+		Application->MessageBox(
+					changedStr.c_str(),
+					"Scheduler",
+					MB_ICONINFORMATION );
 
-			ReloadTable();
-		}
+		ReloadTable();
 	}
 }
 //---------------------------------------------------------------------------
@@ -896,7 +876,7 @@ void __fastcall TScheduleForm::theTimerTimer(TObject *)
 			}
 			else
 			{
-				TRegistry	*reg = new TRegistry;
+				std::auto_ptr<TRegistry> reg(new TRegistry());
 
 				if( reg->OpenKey( REGISTRY_KEY, false ) )
 				{
@@ -913,8 +893,6 @@ void __fastcall TScheduleForm::theTimerTimer(TObject *)
 					reg->CloseKey();
 				}
 
-				delete reg;
-
 				title.Insert( "Überfällig: ", 1 );
 				description.Insert( "Überfällig: ", 1 );
 			}
@@ -925,7 +903,7 @@ void __fastcall TScheduleForm::theTimerTimer(TObject *)
 			if( alarmButton == mrOk && redoTime > 0 )
 			{
 
-				TRegistry	*reg = new TRegistry;
+				std::auto_ptr<TRegistry> reg(new TRegistry());
 
 				if( reg->OpenKey( REGISTRY_KEY, true ) )
 				{
@@ -934,10 +912,6 @@ void __fastcall TScheduleForm::theTimerTimer(TObject *)
 
 					reg->CloseKey();
 				}
-
-				delete reg;
-
-
 
 				now = Now();
 				if( AlarmDialog->RedoUnitCombo->ItemIndex == 0 ) // Minutes

@@ -96,7 +96,7 @@ int __fastcall TExportActivitiesDialog::Show( const AnsiString &selProject, TDat
 	ProjectCombo->ItemIndex = selIndex +1;
 
 	// setup other options
-	TRegistry		*registry = new TRegistry;
+	std::auto_ptr<TRegistry>	registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false ) )
 	{
@@ -110,8 +110,6 @@ int __fastcall TExportActivitiesDialog::Show( const AnsiString &selProject, TDat
 
 		registry->CloseKey();
 	}
-
-	delete registry;
 
 	// determine default filename
 	putFileNameAndMonth( selProject, startDate );
@@ -134,7 +132,7 @@ void __fastcall TExportActivitiesDialog::ButtonBrowseClick(TObject *)
 //---------------------------------------------------------------------------
 void __fastcall TExportActivitiesDialog::ButtonOkClick(TObject *)
 {
-	TRegistry	*registry = new TRegistry;
+	std::auto_ptr<TRegistry>	registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, true ) )
 	{
@@ -150,8 +148,6 @@ void __fastcall TExportActivitiesDialog::ButtonOkClick(TObject *)
 
 		registry->CloseKey();
 	}
-
-	delete registry;
 }
 //---------------------------------------------------------------------------
 

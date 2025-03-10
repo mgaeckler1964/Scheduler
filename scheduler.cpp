@@ -118,7 +118,7 @@ static void saveActiveChild( void )
 
 		usersToOpen += formatNumber( *it );
 	}
-	TRegistry	*reg = new TRegistry;
+	std::auto_ptr<TRegistry>	reg(new TRegistry());
 
 	reg->OpenKey( REGISTRY_KEY, true );
 	if( MainForm->ActiveMDIChild )
@@ -128,19 +128,17 @@ static void saveActiveChild( void )
 	}
 	reg->WriteString( "usersToOpen", (const char *)usersToOpen );
 	reg->CloseKey();
-
-	delete reg;
 }
 
 static void reactivateChild( void )
 {
-	TForm			*theChild;
-	int				i;
+	TForm						*theChild;
+	int							i;
 
-	int				theChildTag = 0;
-	TWindowState	activeState = wsNormal;
-	T_STRING		usersToOpen;
-	TRegistry		*reg = new TRegistry;
+	int							theChildTag = 0;
+	TWindowState				activeState = wsNormal;
+	T_STRING					usersToOpen;
+	std::auto_ptr<TRegistry>	reg(new TRegistry());
 
 	if( reg->OpenKey( REGISTRY_KEY, false ) )
 	{
@@ -153,7 +151,6 @@ static void reactivateChild( void )
 
 		reg->CloseKey();
 	}
-	delete reg;
 
 	if( usersToOpen.isEmpty() )
 		MainForm->openUser( actUser.ID );

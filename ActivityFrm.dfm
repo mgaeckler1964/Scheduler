@@ -1,7 +1,7 @@
 object ActivityForm: TActivityForm
   Tag = 1
-  Left = 2030
-  Top = 300
+  Left = 430
+  Top = 439
   Width = 581
   Height = 495
   Caption = 'Tätigkeiten'

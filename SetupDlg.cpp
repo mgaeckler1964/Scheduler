@@ -50,7 +50,7 @@ __fastcall TSetupDialog::TSetupDialog(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TSetupDialog::FormCreate(TObject *)
 {
-	TRegistry	*reg = new TRegistry;
+	std::auto_ptr<TRegistry>	reg(new TRegistry());
 
 	if( reg->OpenKey( REGISTRY_KEY, false ) )
 	{
@@ -93,13 +93,11 @@ void __fastcall TSetupDialog::FormCreate(TObject *)
 		CheckBoxMobileServer->Checked = false;
 		EditServerPort->Text = "";
 	}
-
-	delete reg;
 }
 //---------------------------------------------------------------------------
 void __fastcall TSetupDialog::ButtonOKClick(TObject *)
 {
-	TRegistry	*reg = new TRegistry;
+	std::auto_ptr<TRegistry>	reg(new TRegistry());
 
 	reg->OpenKey( REGISTRY_KEY, true );
 	reg->WriteBool( "AutoActivity", AutoActivityCheckBox->Checked );
@@ -117,13 +115,11 @@ void __fastcall TSetupDialog::ButtonOKClick(TObject *)
 	reg->WriteBool( "InfoMinimize", CheckBoxInfoMinimize->Checked );
 
 	reg->CloseKey();
-
-	delete reg;
 }
 //---------------------------------------------------------------------------
 void __fastcall TSetupDialog::ButtonCancelClick(TObject *)
 {
-	TRegistry	*reg = new TRegistry;
+	std::auto_ptr<TRegistry>	reg(new TRegistry());
 
 	if( reg->OpenKey( REGISTRY_KEY, false ) )
 	{
@@ -144,8 +140,5 @@ void __fastcall TSetupDialog::ButtonCancelClick(TObject *)
 		AutoActivityCheckBox->Checked = false;
 		DatabaseRadioGroup->ItemIndex = 0;
 	}
-
-
-	delete reg;
 }
 //---------------------------------------------------------------------------
