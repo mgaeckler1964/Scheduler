@@ -87,9 +87,11 @@ object AboutBox: TAboutBox
     object Copyright: TLabel
       Left = 8
       Top = 64
-      Width = 129
+      Width = 141
       Height = 39
-      Caption = '(c) 2013 Martin Gäckler Linz https://www.gaeckler.at/'
+      Caption = 
+        '(c) 2001-2025 Martin Gäckler Linz/Österreich https://www.gaeckle' +
+        'r.at/'
       WordWrap = True
       IsControl = True
     end

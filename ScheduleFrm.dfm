@@ -1,7 +1,7 @@
 object ScheduleForm: TScheduleForm
   Tag = 4
-  Left = 439
-  Top = 290
+  Left = 345
+  Top = 306
   Width = 994
   Height = 540
   Caption = 'Termine'
@@ -210,9 +210,9 @@ object ScheduleForm: TScheduleForm
     object TasksRadio: TRadioButton
       Left = 576
       Top = 0
-      Width = 57
+      Width = 73
       Height = 17
-      Caption = 'Aufgabe'
+      Caption = 'Aufgaben'
       TabOrder = 8
       OnClick = ButtonTasksClick
     end
