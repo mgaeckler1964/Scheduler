@@ -83,9 +83,6 @@ __published:	// IDE-managed Components
 	TMenuItem *Import1;
 	TOpenDialog *OpenDialog;
 	TQuery *insertDateSQL;
-	TButton *ButtonAll;
-	TButton *ButtonDates;
-	TButton *ButtonTasks;
 	TBitBtn *BitBtnDeleteAll;
 	TMenuItem *ImExportOutlook1;
 	TMenuItem *Import2;
@@ -95,6 +92,10 @@ __published:	// IDE-managed Components
 	TQuery *activeDatesQuery;
 	TTimer *theTimer;
 	TDBNavigator *DBNavigator;
+	TRadioButton *RadioAll;
+	TRadioButton *DatesRadio;
+	TRadioButton *TasksRadio;
+	TBitBtn *FinishBitBtn;
 	void __fastcall NeuerTerminClick(TObject *Sender);
 	void __fastcall TerminBearbeitenClick(TObject *Sender);
 	void __fastcall TerminLschenClick(TObject *Sender);
@@ -113,6 +114,7 @@ __published:	// IDE-managed Components
 	void __fastcall Import2Click(TObject *Sender);
 	void __fastcall theTimerTimer(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall FinishBitBtnClick(TObject *Sender);
 private:	// User declarations
 	long	userId;
 	bool	readOnly;

@@ -256,3 +256,9 @@ void __fastcall TEditDateDialog::AlarmBeforeDBEditChange(TObject *)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TEditDateDialog::FinishBitBtnClick(TObject *Sender)
+{
+	AlarmBeforeDBEdit->Text = "";
+}
+//---------------------------------------------------------------------------
+

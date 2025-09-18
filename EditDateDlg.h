@@ -42,6 +42,7 @@
 #include <DBTables.hpp>
 #include <Mask.hpp>
 #include <ComCtrls.hpp>
+#include <Buttons.hpp>
 //---------------------------------------------------------------------------
 class TEditDateDialog : public TForm
 {
@@ -102,6 +103,7 @@ __published:	// IDE-managed Components
 	TIntegerField *ScheduleTableALARMBEFORE;
 	TStringField *ScheduleTableALARMUNIT;
 	TIntegerField *ScheduleTableRECURRINGID;
+	TBitBtn *FinishBitBtn;
 	void __fastcall ButtonOkClick(TObject *Sender);
 	void __fastcall ButtonCancelClick(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
@@ -109,6 +111,7 @@ __published:	// IDE-managed Components
 	void __fastcall ScheduleTableBeforePost(TDataSet *DataSet);
 	void __fastcall ButtonNoTaskClick(TObject *Sender);
 	void __fastcall AlarmBeforeDBEditChange(TObject *Sender);
+	void __fastcall FinishBitBtnClick(TObject *Sender);
 private:	// User declarations
 	long	m_actualDateId;
 	bool	m_readOnly;

@@ -966,11 +966,35 @@ void __fastcall TScheduleForm::theTimerTimer(TObject *)
 
 
 void __fastcall TScheduleForm::FormClose(TObject *,
-      TCloseAction &Action)
+	  TCloseAction &Action)
 {
 	datesQuery->Close();
 	Action = caFree;
 }
 //---------------------------------------------------------------------------
 
+
+void __fastcall TScheduleForm::FinishBitBtnClick(TObject *Sender)
+{
+	if( readOnly )
+/*@*/	return;
+
+	if( Application->MessageBox(
+						"Wollen Sie den Termin abschlieﬂen?",
+						"Achtung",
+						MB_YESNO|MB_ICONQUESTION ) == IDYES )
+	{
+		std::auto_ptr<TQuery>	delSQL(new TQuery( Application ) );
+
+		delSQL->DatabaseName = "SchedulerDB";
+		delSQL->SQL->Add( "update schedule set AlarmDate = null where id = :theId" );
+		delSQL->Params->Items[0]->AsInteger = datesQuery->FieldByName( "id" )->AsInteger;
+
+		delSQL->ExecSQL();
+
+		ReloadTable();
+	}
+
+}
+//---------------------------------------------------------------------------
 
