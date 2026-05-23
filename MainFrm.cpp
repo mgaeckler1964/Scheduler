@@ -63,6 +63,7 @@ using namespace vcl;
 #pragma resource "*.dfm"
 //---------------------------------------------------------------------------
 
+#define WM_NOTIFY_ICON	WM_USER+1
 
 char REGISTRY_KEY[] = "\\Software\\gak\\Scheduler";
 TMainForm *MainForm;
@@ -211,7 +212,7 @@ void __fastcall TMainForm::AppMinimize(TObject *)
 		iconData.hWnd = Handle;
 		iconData.uID = 100;
 		iconData.uFlags = NIF_MESSAGE + NIF_ICON + NIF_TIP;
-		iconData.uCallbackMessage = WM_USER + 1;
+		iconData.uCallbackMessage = WM_NOTIFY_ICON;
 		iconData.hIcon = Application->Icon->Handle;
 
 		Shell_NotifyIcon(NIM_ADD, &iconData);
@@ -226,7 +227,7 @@ void __fastcall TMainForm::AppWindowProc(TMessage &msg)
 	doEnterFunction("TMainForm::AppWindowProc");
 	doLogValue( msg.Msg );
 
-	if( msg.Msg == WM_USER + 1 )
+	if( msg.Msg == WM_NOTIFY_ICON )
 	{
 		if( msg.LParam == WM_LBUTTONUP
 		||  msg.LParam == WM_RBUTTONUP )
@@ -422,7 +423,7 @@ void __fastcall TMainForm::FormShow(TObject *)
 		);
 
 		ShowWindow( theWindow, SW_RESTORE );
-		SendMessage( theWindow, WM_USER+1, 0, WM_LBUTTONUP );
+		SendMessage( theWindow, WM_NOTIFY_ICON, 0, WM_LBUTTONUP );
 
 //		exit(1);
 		Application->Tag = 1;

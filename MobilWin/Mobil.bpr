@@ -11,9 +11,14 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) MobileFrm.dfm"/>
     <LIBFILES value="..\..\..\Object\gaklib\gaklib_bcb.lib"/>
-    <LIBRARIES value="Vcl50.lib"/>
-    <SPARELIBS value="Vcl50.lib"/>
-    <PACKAGES value="Vcl50.bpi Vclx50.bpi"/>
+    <LIBRARIES value="qrpt50.lib tee50.lib teedb50.lib vclx50.lib vcl50.lib vclbde50.lib 
+      vcldb50.lib bcbsmp50.lib"/>
+    <SPARELIBS value="bcbsmp50.lib vcldb50.lib vclbde50.lib vcl50.lib vclx50.lib teedb50.lib 
+      tee50.lib qrpt50.lib"/>
+    <PACKAGES value="Vcl50.bpi Vclx50.bpi Vcldb50.bpi VCLBDE50.bpi bcbsmp50.bpi 
+      bcb2kaxserver50.bpi bcbie50.bpi vclie50.bpi Inetdb50.bpi Inet50.bpi 
+      webmid50.bpi Vclmid50.bpi gak_components.bpi VCLIB50.bpi vclado50.bpi 
+      vcldbx50.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
