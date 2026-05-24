@@ -1,32 +1,32 @@
 /*
-		Project:		Scheduler
-		Module:			
-		Description:	
-		Author:			Martin Gäckler
-		Address:		Hofmannsthalweg 14, A-4030 Linz
-		Web:			https://www.gaeckler.at/
+	Project:		Scheduler
+	Module:			MainFrm.cpp
+	Description:	the scheduler main form
+	Author:			Martin Gäckler
+	Address:		Hofmannsthalweg 14, A-4030 Linz
+	Web:			https://www.gaeckler.at/
 
-		Copyright:		(c) 1988-2024 Martin Gäckler
+	Copyright:		(c) 1988-2026 Martin Gäckler
 
-		This program is free software: you can redistribute it and/or modify  
-		it under the terms of the GNU General Public License as published by  
-		the Free Software Foundation, version 3.
+	This program is free software: you can redistribute it and/or modify  
+	it under the terms of the GNU General Public License as published by  
+	the Free Software Foundation, version 3.
 
-		You should have received a copy of the GNU General Public License 
-		along with this program. If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU General Public License 
+	along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-		THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Austria, Linz ``AS IS''
-		AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-		TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-		PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR
-		CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-		SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-		LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-		USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-		ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-		OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-		OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-		SUCH DAMAGE.
+	THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Linz, Austria ``AS IS''
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+	TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+	PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR
+	CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+	LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+	USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+	ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+	OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+	SUCH DAMAGE.
 */
 
 //---------------------------------------------------------------------------
@@ -75,7 +75,7 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
 //---------------------------------------------------------------------------
 int TMainForm::loadPermissions( int schedulerId )
 {
-	doEnterFunction( "TMainForm::loadPermissions()" );
+	doEnterFunctionEx( gakLogging::llDetail, "TMainForm::loadPermissions()" );
 
 	int	userPermissions = 0;
 
@@ -109,7 +109,7 @@ int TMainForm::loadPermissions( int schedulerId )
 }
 
 //---------------------------------------------------------------------------
-void TMainForm::login( void )
+void TMainForm::login()
 {
 	bool	showLogin;
 
@@ -154,13 +154,13 @@ void TMainForm::login( void )
 	} while( !actUser || actUser->ID == 0 );
 
 	if( actUser->ID )
-		StatusBar->Panels->Items[2]->Text = (const char *)actUser->userName;
+		StatusBar->Panels->Items[2]->Text = actUser->userName.c_str();
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TMainForm::Ende1Click(TObject *)
 {
-	doEnterFunction("TMainForm::Ende1Click");
+	doEnterFunctionEx( gakLogging::llInfo, "TMainForm::Ende1Click" );
 	Close();
 }
 //---------------------------------------------------------------------------
@@ -206,6 +206,9 @@ void __fastcall TMainForm::FileUserClick(TObject *)
 
 void __fastcall TMainForm::AppMinimize(TObject *)
 {
+	doEnterFunctionEx( gakLogging::llInfo, "TMainForm::AppMinimize" );
+	doLogValueEx( gakLogging::llInfo, Application->Handle );
+	doLogValueEx( gakLogging::llInfo, Handle );
 	if( SetupDialog->GetInfoMinimize() )
 	{
 		iconData.cbSize = sizeof(iconData);
@@ -224,8 +227,8 @@ void __fastcall TMainForm::AppMinimize(TObject *)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::AppWindowProc(TMessage &msg)
 {
-	doEnterFunction("TMainForm::AppWindowProc");
-	doLogValue( msg.Msg );
+	doEnterFunctionEx(gakLogging::llDetail, "TMainForm::AppWindowProc");
+	doLogValueEx(gakLogging::llDetail, msg.Msg );
 
 	if( msg.Msg == WM_NOTIFY_ICON )
 	{
@@ -257,7 +260,7 @@ void __fastcall TMainForm::AppWindowProc(TMessage &msg)
 
 void __fastcall TMainForm::FormDestroy(TObject *)
 {
-	doEnterFunction("TMainForm::FormDestroy");
+	doEnterFunctionEx( gakLogging::llInfo, "TMainForm::FormDestroy" );
 	Shell_NotifyIcon(NIM_DELETE, &iconData);
 }
 //---------------------------------------------------------------------------
@@ -277,12 +280,14 @@ void __fastcall TMainForm::Einstellungen1Click(TObject *)
 
 void __fastcall TMainForm::FormActivate(TObject *)
 {
+	doEnterFunctionEx( gakLogging::llInfo, "TMainForm::FormActivate" );
 	setDateFormats();
 }
 //---------------------------------------------------------------------------
 
 void TMainForm::openUser( int userId )
 {
+	doEnterFunctionEx( gakLogging::llInfo, "TMainForm::openUser" );
 	int perms = loadPermissions( userId );
 	if( !perms )
 	{
@@ -364,6 +369,7 @@ void TMainForm::openUser( int userId )
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::FormShow(TObject *)
 {
+	doEnterFunctionEx( gakLogging::llInfo, "TMainForm::FormShow" );
 	int		dbType = 0;
 	bool	MobileServer = false;
 	int		ServerPort = 0;
@@ -450,7 +456,7 @@ void __fastcall TMainForm::FormShow(TObject *)
 	privateDir += ntUserName;
 	mkdir( privateDir );
 
-	Session->PrivateDir = (const char*)privateDir;
+	Session->PrivateDir = privateDir.c_str();
 
 	/*
 		open the database
@@ -546,12 +552,8 @@ void __fastcall TMainForm::FormShow(TObject *)
 		StatusBar->Panels->Items[1]->Text = ntUserName;
 	}
 
-
-	int		sessionCount;
-
 	Application->OnMinimize = AppMinimize;
 	WindowProc = AppWindowProc;
-
 
 	// run the server if required
 	if( MobileServer
@@ -605,7 +607,7 @@ void __fastcall TMainForm::Rechte1Click(TObject *)
 
 void __fastcall TMainForm::FormClose(TObject *, TCloseAction &)
 {
-	doEnterFunction("TMainForm::FormClose");
+	doEnterFunctionEx( gakLogging::llInfo, "TMainForm::FormClose" );
 	theDatabase->Close();
 }
 //---------------------------------------------------------------------------
@@ -614,6 +616,18 @@ void __fastcall TMainForm::FormClose(TObject *, TCloseAction &)
 void __fastcall TMainForm::aboutClick(TObject *)
 {
 	AboutBox->ShowModal();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMainForm::FormHide(TObject *)
+{
+	doEnterFunctionEx( gakLogging::llInfo, "TMainForm::FormHide" );
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMainForm::FormDeactivate(TObject *)
+{
+	doEnterFunctionEx( gakLogging::llInfo, "TMainForm::FormDeactivate" );
 }
 //---------------------------------------------------------------------------
 

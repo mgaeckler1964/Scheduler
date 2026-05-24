@@ -1,6 +1,6 @@
 object AlarmDialog: TAlarmDialog
-  Left = 595
-  Top = 349
+  Left = 111
+  Top = 340
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Alarm'

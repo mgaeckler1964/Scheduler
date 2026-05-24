@@ -1,32 +1,32 @@
 /*
-		Project:		Scheduler
-		Module:			
-		Description:	
-		Author:			Martin Gäckler
-		Address:		Hofmannsthalweg 14, A-4030 Linz
-		Web:			https://www.gaeckler.at/
+	Project:		Scheduler
+	Module:			scheduleFrm.h
+	Description:	The list of all calendar entries
+	Author:			Martin Gäckler
+	Address:		Hofmannsthalweg 14, A-4030 Linz
+	Web:			https://www.gaeckler.at/
 
-		Copyright:		(c) 1988-2024 Martin Gäckler
+	Copyright:		(c) 1988-2026 Martin Gäckler
 
-		This program is free software: you can redistribute it and/or modify  
-		it under the terms of the GNU General Public License as published by  
-		the Free Software Foundation, version 3.
+	This program is free software: you can redistribute it and/or modify  
+	it under the terms of the GNU General Public License as published by  
+	the Free Software Foundation, version 3.
 
-		You should have received a copy of the GNU General Public License 
-		along with this program. If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU General Public License 
+	along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-		THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Austria, Linz ``AS IS''
-		AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-		TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-		PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR
-		CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-		SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-		LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-		USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-		ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-		OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-		OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-		SUCH DAMAGE.
+	THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Linz, Austria ``AS IS''
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+	TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+	PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR
+	CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+	LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+	USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+	ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+	OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+	SUCH DAMAGE.
 */
 
 //---------------------------------------------------------------------------
@@ -35,6 +35,9 @@
 
 #include <vcl.h>
 #include <vcl/registry.hpp>
+
+#include <gak/logfile.h>
+
 #pragma hdrstop
 
 #include <gak/csv.h>
@@ -58,9 +61,9 @@ void TScheduleForm::setUserId( long userId, const STRING &userName, int permissi
 	STRING newCaption = Caption.c_str();
 	newCaption += ' ';
 	newCaption += userName;
-	Caption = (const char*)newCaption;
+	Caption = newCaption.c_str();
 
-	this->userId = userId;
+	m_userId = userId;
 
 	datesQuery->Params->Items[0]->AsInteger = userId;
 	datesQuery->Open();
@@ -70,23 +73,23 @@ void TScheduleForm::setUserId( long userId, const STRING &userName, int permissi
 	tag += userId * 10;
 	this->Tag = tag;
 
-	readOnly = !(permissions & PERM_SCHEDULE_WRITE);
+	m_readOnly = !(permissions & PERM_SCHEDULE_WRITE);
 
-	BitBtnNew->Enabled = !readOnly;
-	NeuerTermin->Enabled = !readOnly;
+	BitBtnNew->Enabled = !m_readOnly;
+	NeuerTermin->Enabled = !m_readOnly;
 
-	BitBtnDelete->Enabled = !readOnly;
-	TerminLschen->Enabled = !readOnly;
+	BitBtnDelete->Enabled = !m_readOnly;
+	TerminLschen->Enabled = !m_readOnly;
 
-	BitBtnDeleteAll->Enabled = !readOnly;
-	if( readOnly )
+	BitBtnDeleteAll->Enabled = !m_readOnly;
+	if( m_readOnly )
 		BitBtnChange->Caption = "Anzeigen";
 
-	Import1->Enabled = !readOnly;
-	Import2->Enabled = !readOnly;
+	Import1->Enabled = !m_readOnly;
+	Import2->Enabled = !m_readOnly;
 }
 //---------------------------------------------------------------------------
-int TScheduleForm::getLastExport( void )
+int TScheduleForm::getLastExport()
 {
 	int	lastExport = 0;
 
@@ -104,7 +107,7 @@ int TScheduleForm::getLastExport( void )
 
 		activeUserQuery->Prepare();
 	}
-	activeUserQuery->Params->Items[0]->AsInteger = userId;
+	activeUserQuery->Params->Items[0]->AsInteger = m_userId;
 	activeUserQuery->Open();
 	if( !activeUserQuery->Eof )
 		lastExport	= activeUserQuery->Fields->Fields[0]->AsInteger;
@@ -138,7 +141,7 @@ void TScheduleForm::ReloadTable( int id )
 	}
 }
 //---------------------------------------------------------------------------
-void TScheduleForm::importOutlook( void )
+void TScheduleForm::importOutlook()
 {
 	ArrayOfStrings	fieldDef;
 	FieldSet	  	record;
@@ -229,7 +232,7 @@ void TScheduleForm::importOutlook( void )
 				else
 					alarmBefore = -1;
 
-				insertDateSQL->ParamByName( "UserId" )->AsInteger = userId;
+				insertDateSQL->ParamByName( "UserId" )->AsInteger = m_userId;
 				insertDateSQL->ParamByName( "startDate" )->AsDateTime = startDate;
 				insertDateSQL->ParamByName( "endDate" )->AsDateTime = endDate;
 				insertDateSQL->ParamByName( "title" )->AsString = Betreff;
@@ -358,7 +361,7 @@ endTime = buffer;
 			}
 
 			updateUserSQL->Params->Items[0]->AsInteger = maxId;
-			updateUserSQL->Params->Items[1]->AsInteger = userId;
+			updateUserSQL->Params->Items[1]->AsInteger = m_userId;
 			updateUserSQL->ExecSQL();
 
 			csvFile.close();
@@ -366,7 +369,7 @@ endTime = buffer;
 	}
 }
 //---------------------------------------------------------------------------
-void TScheduleForm::importCasio( void )
+void TScheduleForm::importCasio()
 {
 	std::auto_ptr<TRegistry> registry(new TRegistry());
 
@@ -429,7 +432,7 @@ void TScheduleForm::importCasio( void )
 					alarmBefore += (anfang%100)-(alarm%100);
 				}
 
-				insertDateSQL->ParamByName( "UserId" )->AsInteger = userId;
+				insertDateSQL->ParamByName( "UserId" )->AsInteger = m_userId;
 				insertDateSQL->ParamByName( "startDate" )->AsDateTime = startDate;
 				insertDateSQL->ParamByName( "endDate" )->AsDateTime = endDate;
 				insertDateSQL->ParamByName( "title" )->AsString = text;
@@ -521,7 +524,7 @@ void TScheduleForm::exportCasio( TQuery *datesSQL )
 		dbaseTable->Close();
 
 		updateUserSQL->Params->Items[0]->AsInteger = maxId;
-		updateUserSQL->Params->Items[1]->AsInteger = userId;
+		updateUserSQL->Params->Items[1]->AsInteger = m_userId;
 		updateUserSQL->ExecSQL();
 	}
 }
@@ -536,11 +539,11 @@ __fastcall TScheduleForm::TScheduleForm(TComponent* Owner)
 
 void __fastcall TScheduleForm::NeuerTerminClick(TObject *)
 {
-	if( readOnly )
+	if( m_readOnly )
 /*@*/	return;
 
 	EditDateDialog->setNewDate();
-	if( EditDateDialog->ShowModal(userId) == mrOk )
+	if( EditDateDialog->ShowModal(m_userId) == mrOk )
 		ReloadTable( EditDateDialog->getNewDate() );
 }
 //---------------------------------------------------------------------------
@@ -551,8 +554,8 @@ void __fastcall TScheduleForm::TerminBearbeitenClick(TObject *)
 
 	if( theID )
 	{
-		EditDateDialog->setActualDate( theID, readOnly );
-		if( EditDateDialog->ShowModal(userId) == mrOk )
+		EditDateDialog->setActualDate( theID, m_readOnly );
+		if( EditDateDialog->ShowModal(m_userId) == mrOk )
 			ReloadTable( theID );
 	}
 }
@@ -561,7 +564,7 @@ void __fastcall TScheduleForm::TerminBearbeitenClick(TObject *)
 
 void __fastcall TScheduleForm::TerminLschenClick(TObject *)
 {
-	if( readOnly )
+	if( m_readOnly )
 /*@*/	return;
 
 	if( Application->MessageBox(
@@ -619,7 +622,7 @@ void __fastcall TScheduleForm::ExportAllClick(TObject *)
 
 void __fastcall TScheduleForm::ExportNewClick(TObject *)
 {
-	newQuery->Params->Items[0]->AsInteger = userId;
+	newQuery->Params->Items[0]->AsInteger = m_userId;
 	newQuery->Params->Items[1]->AsInteger = getLastExport();
 	newQuery->Open();
 
@@ -632,7 +635,7 @@ void __fastcall TScheduleForm::ExportNewClick(TObject *)
 
 void __fastcall TScheduleForm::Import1Click(TObject *)
 {
-	if( readOnly )
+	if( m_readOnly )
 /*@*/	return;
 
 	void	*bookmark;
@@ -661,7 +664,7 @@ void __fastcall TScheduleForm::ButtonAllClick(TObject *)
 							"on (Project.ID = Schedule.Project) "
 							"where Schedule.userId = :theUser "
 							"order by Schedule.enddate, Schedule.startdate, project.name, Schedule.title" );
-	datesQuery->Params->Items[0]->AsInteger = userId;
+	datesQuery->Params->Items[0]->AsInteger = m_userId;
 	datesQuery->Open();
 }
 //---------------------------------------------------------------------------
@@ -678,7 +681,7 @@ void __fastcall TScheduleForm::ButtonDatesClick(TObject *)
 									"(Schedule.estEffort is null or Schedule.estEffort = 0)) and "
 									"Schedule.userId = :theUser "
 							"order by Schedule.enddate, Schedule.startdate, project.name, Schedule.title" );
-	datesQuery->Params->Items[0]->AsInteger = userId;
+	datesQuery->Params->Items[0]->AsInteger = m_userId;
 	datesQuery->Open();
 }
 //---------------------------------------------------------------------------
@@ -695,14 +698,14 @@ void __fastcall TScheduleForm::ButtonTasksClick(TObject *)
 									"(Schedule.estEffort is not null and Schedule.estEffort > 0) and "
 									"Schedule.userId = :theUser "
 							"order by Schedule.enddate, Schedule.startdate, project.name, Schedule.title" );
-	datesQuery->Params->Items[0]->AsInteger = userId;
+	datesQuery->Params->Items[0]->AsInteger = m_userId;
 	datesQuery->Open();
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TScheduleForm::BitBtnDeleteAllClick(TObject *)
 {
-	if( readOnly )
+	if( m_readOnly )
 /*@*/	return;
 
 	if( Application->MessageBox(
@@ -717,7 +720,7 @@ void __fastcall TScheduleForm::BitBtnDeleteAllClick(TObject *)
 		delSQL->SQL->Add( "and not exists ("
 								"select * from activities a where a.task = s.id"
 							")" );
-		delSQL->Params->Items[0]->AsInteger = userId;
+		delSQL->Params->Items[0]->AsInteger = m_userId;
 		delSQL->Params->Items[1]->AsDateTime = Sysutils::Date();
 
 		delSQL->ExecSQL();
@@ -749,7 +752,7 @@ void __fastcall TScheduleForm::ExportAlle1Click(TObject *)
 //---------------------------------------------------------------------------
 void __fastcall TScheduleForm::ExportNeue1Click(TObject *)
 {
-	newQuery->Params->Items[0]->AsInteger = userId;
+	newQuery->Params->Items[0]->AsInteger = m_userId;
 	newQuery->Params->Items[1]->AsInteger = getLastExport();
 	newQuery->Open();
 
@@ -760,7 +763,7 @@ void __fastcall TScheduleForm::ExportNeue1Click(TObject *)
 //---------------------------------------------------------------------------
 void __fastcall TScheduleForm::Import2Click(TObject *)
 {
-	if( readOnly )
+	if( m_readOnly )
 /*@*/	return;
 
 	void	*bookmark;
@@ -783,6 +786,7 @@ void __fastcall TScheduleForm::Import2Click(TObject *)
 
 void __fastcall TScheduleForm::theTimerTimer(TObject *)
 {
+	doEnterFunctionEx(gakLogging::llInfo, "TScheduleForm::theTimerTimer");
 	TDateTime		now = Now();
 	TDateTime		startDate,
 					alarmDate;
@@ -801,7 +805,7 @@ void __fastcall TScheduleForm::theTimerTimer(TObject *)
 	theTimer->Enabled = false;
 	theTimer->Interval = 0;
 
-	activeDatesQuery->Params->Items[0]->AsInteger = userId;
+	activeDatesQuery->Params->Items[0]->AsInteger = m_userId;
 	activeDatesQuery->Params->Items[1]->AsDateTime = now;
 
 	activeDatesQuery->Open();
@@ -974,9 +978,9 @@ void __fastcall TScheduleForm::FormClose(TObject *,
 //---------------------------------------------------------------------------
 
 
-void __fastcall TScheduleForm::FinishBitBtnClick(TObject *Sender)
+void __fastcall TScheduleForm::FinishBitBtnClick(TObject *)
 {
-	if( readOnly )
+	if( m_readOnly )
 /*@*/	return;
 
 	if( Application->MessageBox(
@@ -994,7 +998,6 @@ void __fastcall TScheduleForm::FinishBitBtnClick(TObject *Sender)
 
 		ReloadTable();
 	}
-
 }
 //---------------------------------------------------------------------------
 

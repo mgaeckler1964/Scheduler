@@ -1,32 +1,32 @@
 /*
-		Project:		Scheduler
-		Module:			
-		Description:	
-		Author:			Martin Gäckler
-		Address:		Hofmannsthalweg 14, A-4030 Linz
-		Web:			https://www.gaeckler.at/
+	Project:		Scheduler
+	Module:			RecurringFrm.cpp
+	Description:	Repeated callendar entries
+	Author:			Martin Gäckler
+	Address:		Hofmannsthalweg 14, A-4030 Linz
+	Web:			https://www.gaeckler.at/
 
-		Copyright:		(c) 1988-2024 Martin Gäckler
+	Copyright:		(c) 1988-2026 Martin Gäckler
 
-		This program is free software: you can redistribute it and/or modify  
-		it under the terms of the GNU General Public License as published by  
-		the Free Software Foundation, version 3.
+	This program is free software: you can redistribute it and/or modify  
+	it under the terms of the GNU General Public License as published by  
+	the Free Software Foundation, version 3.
 
-		You should have received a copy of the GNU General Public License 
-		along with this program. If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU General Public License 
+	along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-		THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Austria, Linz ``AS IS''
-		AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-		TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-		PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR
-		CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-		SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-		LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-		USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-		ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-		OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-		OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-		SUCH DAMAGE.
+	THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Linz, Austria ``AS IS''
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+	TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+	PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR
+	CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+	LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+	USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+	ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+	OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+	SUCH DAMAGE.
 */
 
 //---------------------------------------------------------------------------
@@ -151,7 +151,7 @@ __fastcall TRecurringForm::TRecurringForm(TComponent* Owner)
 {
 }
 //---------------------------------------------------------------------------
-void TRecurringForm::getRecurringSchedules( void )
+void TRecurringForm::getRecurringSchedules()
 {
 	TDateTime		today = TDateTime::CurrentDate();
 	TDateTime		maxDate = today + 366;
@@ -174,14 +174,14 @@ void TRecurringForm::getRecurringSchedules( void )
 
 	reservatQuery->SQL->Add( "select * from SCHEDULE "
 								"where USERID = :theUser");
-	reservatQuery->Params->Items[0]->AsInteger = userId;
+	reservatQuery->Params->Items[0]->AsInteger = m_userId;
 
 	repResQuery->SQL->Add( "select * from RECURRING "
 							"where (LETZTEREINTRAG is null or "
 							"LETZTEREINTRAG < :maxDate) and "
 							"USERID = :theUser" );
 	repResQuery->Params->Items[0]->AsDate = maxDate;
-	repResQuery->Params->Items[1]->AsInteger = userId;
+	repResQuery->Params->Items[1]->AsInteger = m_userId;
 
 	//reservatQuery->UniDirectional = true;
 	//repResQuery->UniDirectional = true;
@@ -303,7 +303,7 @@ void TRecurringForm::getRecurringSchedules( void )
 						"SchedulerDB", "SCHEDULE", "ID"
 					)
 				;
-				reservatQuery->FieldByName( "UserId" )->AsInteger = userId;
+				reservatQuery->FieldByName( "UserId" )->AsInteger = m_userId;
 				reservatQuery->FieldByName( "StartDate" )->AsDateTime = lastDate + repResQuery->FieldByName( "UhrzeitAnfang" )->AsDateTime;
 				reservatQuery->FieldByName( "EndDate" )->AsDateTime = reservatQuery->FieldByName( "StartDate" )->AsDateTime + repResQuery->FieldByName( "DauerTage" )->AsInteger + repResQuery->FieldByName( "DauerStunden" )->AsDateTime;
 				reservatQuery->FieldByName( "Title" )->AsString = repResQuery->FieldByName( "Title" )->AsString;
@@ -359,7 +359,7 @@ void TRecurringForm::getRecurringSchedules( void )
 	repResQuery->Close();
 }
 //---------------------------------------------------------------------------
-void TRecurringForm::removeSchedules( void )
+void TRecurringForm::removeSchedules()
 {
 	std::auto_ptr<TQuery>	delSql(new TQuery( Application ));
 
@@ -369,7 +369,7 @@ void TRecurringForm::removeSchedules( void )
 	delSql->ExecSQL();
 }
 //---------------------------------------------------------------------------
-void TRecurringForm::enableDisableControls( void )
+void TRecurringForm::enableDisableControls()
 {
 	if( RepeatComboBox->ItemIndex == 0 )	// täglich
 	{
@@ -451,7 +451,7 @@ void TRecurringForm::enableDisableControls( void )
 	}
 }
 //---------------------------------------------------------------------------
-void TRecurringForm::transfer2Controls( void )
+void TRecurringForm::transfer2Controls()
 {
 	int			counter;
 	TTime		selTime;
@@ -477,7 +477,7 @@ void TRecurringForm::transfer2Controls( void )
 	enableDisableControls();
 }
 //---------------------------------------------------------------------------
-void TRecurringForm::transfer2Table( void )
+void TRecurringForm::transfer2Table()
 {
 	int				counter;
 	TTime			selTime;
@@ -542,7 +542,7 @@ void __fastcall TRecurringForm::RecurringQueryBeforePost(TDataSet *)
 void __fastcall TRecurringForm::RecurringQueryAfterInsert(TDataSet *)
 {
 	RecurringQuery->FieldByName( "Wiederholung" )->AsInteger = 0;
-	RecurringQuery->FieldByName( "UserId" )->AsInteger = userId;
+	RecurringQuery->FieldByName( "UserId" )->AsInteger = m_userId;
 	RecurringQuery->FieldByName( "ID" )->AsInteger = getNewMaxValue(
 		"SchedulerDB", "RECURRING", "ID"
 	);
@@ -569,7 +569,7 @@ void __fastcall TRecurringForm::RecurringQueryAfterPost(TDataSet *)
 	for( int i=0; i<MainForm->MDIChildCount; i++ )
 	{
 		ScheduleForm = dynamic_cast<TScheduleForm *>(MainForm->MDIChildren[i]);
-		if( ScheduleForm && ScheduleForm->getUserId() == userId )
+		if( ScheduleForm && ScheduleForm->getUserId() == m_userId )
 		{
 			ScheduleForm->ReloadTable();
 			break;
@@ -580,7 +580,7 @@ void __fastcall TRecurringForm::RecurringQueryAfterPost(TDataSet *)
 //---------------------------------------------------------------------------
 void __fastcall TRecurringForm::ComboBoxChange(TObject *)
 {
-	if( readOnly )
+	if( m_readOnly )
 /*@*/	return;
 
 	enableDisableControls();
@@ -589,7 +589,7 @@ void __fastcall TRecurringForm::ComboBoxChange(TObject *)
 //---------------------------------------------------------------------------
 void __fastcall TRecurringForm::sTimePickerChange(TObject *)
 {
-	if( readOnly )
+	if( m_readOnly )
 /*@*/	return;
 
 	RecurringQuery->Edit();

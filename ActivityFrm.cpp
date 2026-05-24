@@ -1,32 +1,32 @@
 /*
-		Project:		Scheduler
-		Module:			
-		Description:	
-		Author:			Martin Gäckler
-		Address:		Hofmannsthalweg 14, A-4030 Linz
-		Web:			https://www.gaeckler.at/
+	Project:		Scheduler
+	Module:			ActivityFrm.cpp
+	Description:	Work time (Arbeitszeiterfassung)
+	Author:			Martin Gäckler
+	Address:		Hofmannsthalweg 14, A-4030 Linz
+	Web:			https://www.gaeckler.at/
 
-		Copyright:		(c) 1988-2024 Martin Gäckler
+	Copyright:		(c) 1988-2026 Martin Gäckler
 
-		This program is free software: you can redistribute it and/or modify  
-		it under the terms of the GNU General Public License as published by  
-		the Free Software Foundation, version 3.
+	This program is free software: you can redistribute it and/or modify  
+	it under the terms of the GNU General Public License as published by  
+	the Free Software Foundation, version 3.
 
-		You should have received a copy of the GNU General Public License 
-		along with this program. If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU General Public License 
+	along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-		THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Austria, Linz ``AS IS''
-		AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-		TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-		PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR
-		CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-		SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-		LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-		USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-		ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-		OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-		OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-		SUCH DAMAGE.
+	THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Linz, Austria ``AS IS''
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+	TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+	PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR
+	CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+	LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+	USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+	ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+	OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+	SUCH DAMAGE.
 */
 
 //---------------------------------------------------------------------------
@@ -110,8 +110,8 @@ int SchedulerServer::handleGetRequest( const STRING &url )
 
 	loginUser(
 		"SchedulerDB",
-		(const char*)userName,
-		(const char*)password,
+		userName.c_str(),
+		password.c_str(),
 		&theUser
 	);
 
@@ -148,8 +148,8 @@ int SchedulerServer::handlePostRequest( const STRING &url )
 
 	loginUser(
 		"SchedulerDB",
-		(const char*)userName,
-		(const char*)password,
+		userName.c_str(),
+		password.c_str(),
 		&theUser
 	);
 
@@ -264,8 +264,8 @@ std::ostream & operator << ( std::ostream &out, OneDay &data )
 __fastcall TActivityForm::TActivityForm(TComponent* Owner)
 	: TForm(Owner)
 {
-	userId = 0;
-	currentActivityId = -1;
+	m_userId = 0;
+	m_currentActivityId = -1;
 }
 //---------------------------------------------------------------------------
 void TActivityForm::RestartActivity( bool gotoFirst )
@@ -332,7 +332,7 @@ void TActivityForm::deleteActivities(
 	}
 	delSql->SQL->Add( ")" );
 
-	delSql->ParamByName( "theUser" )->AsInteger = userId;
+	delSql->ParamByName( "theUser" )->AsInteger = m_userId;
 	delSql->ParamByName( "minDate" )->AsDateTime = minDate;
 	delSql->ParamByName( "maxDate" )->AsDateTime = maxDate;
 	if( selProject != "Alle" )
@@ -577,7 +577,7 @@ double TActivityForm::doExportProtocol(
 			"\n"
 			"\"Soll\"" << ListSeparator << "\"Ist\"" << ListSeparator << "\"Diff.\"" << ListSeparator << "\"Frei(%)\"" << ListSeparator << "\"Monat\"" << ListSeparator << "\"Aufgabe\"\n";
 
-	ScheduleQuery->ParamByName( "theUser" )->AsInteger = userId;
+	ScheduleQuery->ParamByName( "theUser" )->AsInteger = m_userId;
 	ScheduleQuery->Open();
 	while( !ScheduleQuery->Eof )
 	{
@@ -638,7 +638,7 @@ double TActivityForm::doExportProtocol(
 				"\n"
 				"\"Soll\"" << ListSeparator << "\"Ist\"" << ListSeparator << "\"Grad(%)\"" << ListSeparator << "\"Neu\"" << ListSeparator << "\"Veränd.\"" << ListSeparator << "\"Aufgabe\"\n";
 
-		ScheduleQuery->ParamByName( "theUser" )->AsInteger = userId;
+		ScheduleQuery->ParamByName( "theUser" )->AsInteger = m_userId;
 		ScheduleQuery->Open();
 		while( !ScheduleQuery->Eof )
 		{
@@ -752,7 +752,7 @@ void __fastcall TActivityForm::ExportProtocolClick(TObject *)
 				projectQuery->DatabaseName = "SchedulerDB";
 				projectQuery->UniDirectional = true;
 
-				projectQuery->ParamByName( "theUser" )->AsInteger = userId;
+				projectQuery->ParamByName( "theUser" )->AsInteger = m_userId;
 				projectQuery->ParamByName( "minDate" )->AsDateTime = minDate;
 				projectQuery->ParamByName( "maxDate" )->AsDateTime = maxDate;
 
@@ -805,7 +805,7 @@ void __fastcall TActivityForm::ExportProtocolClick(TObject *)
 
 void __fastcall TActivityForm::FormActivate(TObject *)
 {
-	if( userId )
+	if( m_userId )
 	{
 		TaskQuery->Close();
 		TaskQuery->Open();
@@ -822,7 +822,7 @@ void __fastcall TActivityForm::RestartButtonClick(TObject *)
 	TaskQuery->Open();
 	ActivityQuery->Open();
 
-	if( !readOnly )
+	if( !m_readOnly )
 		StopTimer();
 }
 //---------------------------------------------------------------------------
@@ -1020,9 +1020,9 @@ void __fastcall TActivityForm::ImportCSVClick(TObject *)
 				sscanf( endDateStr, "%d.%d.%d %d:%d:%d", &day, &month, &year, &hour, &minute, &second );
 				endDate = EncodeDate( (Word)year, (Word)month, (Word)day ) + EncodeTime( (Word)hour, (Word)minute, (Word)second, 0 );
 
-				ProjectScheduleQuery->Params->Items[0]->AsInteger = userId;
-				ProjectScheduleQuery->Params->Items[1]->AsString = (const char *)title;
-				ProjectScheduleQuery->Params->Items[2]->AsString = (const char *)project;
+				ProjectScheduleQuery->Params->Items[0]->AsInteger = m_userId;
+				ProjectScheduleQuery->Params->Items[1]->AsString = title.c_str();
+				ProjectScheduleQuery->Params->Items[2]->AsString = project.c_str();
 
 				ProjectScheduleQuery->Open();
 				recordCount = ProjectScheduleQuery->RecordCount;
@@ -1031,8 +1031,8 @@ void __fastcall TActivityForm::ImportCSVClick(TObject *)
 					ProjectScheduleQuery->Close();
 					projectId = theDataModule->getProjectId( project );
 
-					ScheduleInsertQuery->Params->Items[0]->AsInteger = userId;
-					ScheduleInsertQuery->Params->Items[1]->AsString = (const char *)title;
+					ScheduleInsertQuery->Params->Items[0]->AsInteger = m_userId;
+					ScheduleInsertQuery->Params->Items[1]->AsString = title.c_str();
 					ScheduleInsertQuery->Params->Items[2]->AsInteger = projectId;
 					ScheduleInsertQuery->Params->Items[3]->AsDateTime = TDateTime::CurrentDateTime();
 					ScheduleInsertQuery->Params->Items[4]->AsDateTime = TDateTime::CurrentDateTime();
@@ -1051,8 +1051,8 @@ void __fastcall TActivityForm::ImportCSVClick(TObject *)
 					ActivityQuery->First();
 					while( !ActivityQuery->Eof && !activityFound )
 					{
-						if( ActivityQueryStartTime->AsString == (const char *)startDateStr
-						&&  ActivityQueryEndTime->AsString == (const char *)endDateStr
+						if( ActivityQueryStartTime->AsString == startDateStr.c_str()
+						&&  ActivityQueryEndTime->AsString == endDateStr.c_str()
 						&&  ActivityQueryTask->AsInteger == scheduleId )
 						{
 							activityFound = true;
@@ -1157,7 +1157,7 @@ void __fastcall TActivityForm::ImportCSVClick(TObject *)
 
 void __fastcall TActivityForm::AutoSaveTimerTimer(TObject *)
 {
-	if( ActivityQueryID->AsInteger == currentActivityId && TaskComboBox->Enabled )
+	if( ActivityQueryID->AsInteger == m_currentActivityId && TaskComboBox->Enabled )
 	{
 		int			taskId = getSelectedTaskId();
 
@@ -1165,7 +1165,7 @@ void __fastcall TActivityForm::AutoSaveTimerTimer(TObject *)
 		{
 			TaskComboBox->Enabled = false;
 
-			updateQuery->ParamByName( "id" )->AsInteger = currentActivityId;
+			updateQuery->ParamByName( "id" )->AsInteger = m_currentActivityId;
 			updateQuery->ParamByName( "task" )->AsInteger = taskId;
 			updateQuery->ParamByName( "StartTime" )->AsDateTime = ActivityQueryStartTime->AsDateTime;
 			updateQuery->ParamByName( "EndTime" )->AsDateTime = Now();
@@ -1190,10 +1190,10 @@ void __fastcall TActivityForm::AutoSaveTimerTimer(TObject *)
 
 void __fastcall TActivityForm::StartButtonClick(TObject *Sender )
 {
-	if( readOnly )
+	if( m_readOnly )
 /*@*/	return;
 
-	bool	createNewTask = (currentActivityId <0);
+	bool	createNewTask = (m_currentActivityId <0);
 
 	StopButtonClick( Sender );
 
@@ -1218,14 +1218,14 @@ void __fastcall TActivityForm::StartButtonClick(TObject *Sender )
 
 void __fastcall TActivityForm::StopButtonClick(TObject *)
 {
-	if( readOnly || !ActivityQuery->Active )
+	if( m_readOnly || !ActivityQuery->Active )
 /*@*/	return;
 
 	int	taskId = getSelectedTaskId();
 
-	if( taskId && ActivityQueryID->AsInteger == currentActivityId )
+	if( taskId && ActivityQueryID->AsInteger == m_currentActivityId )
 	{
-		updateQuery->ParamByName( "id" )->AsInteger = currentActivityId;
+		updateQuery->ParamByName( "id" )->AsInteger = m_currentActivityId;
 		updateQuery->ParamByName( "task" )->AsInteger = taskId;
 		updateQuery->ParamByName( "StartTime" )->AsDateTime = ActivityQueryStartTime->AsDateTime;
 		updateQuery->ParamByName( "EndTime" )->AsDateTime = Now();
@@ -1242,7 +1242,7 @@ void __fastcall TActivityForm::StopButtonClick(TObject *)
 
 void __fastcall TActivityForm::DeleteButtonClick(TObject *)
 {
-	if( readOnly )
+	if( m_readOnly )
 /*@*/	return;
 
 	deleteQuery->ParamByName( "id" )->AsInteger = ActivityQueryID->AsInteger;
@@ -1257,7 +1257,7 @@ void __fastcall TActivityForm::DeleteButtonClick(TObject *)
 
 void __fastcall TActivityForm::SaveButtonClick(TObject *)
 {
-	if( readOnly || ActivityQueryTransfered->AsString.Length() )
+	if( m_readOnly || ActivityQueryTransfered->AsString.Length() )
 /*@*/	return;
 
 	int	taskId = getSelectedTaskId();
@@ -1372,7 +1372,7 @@ void TActivityForm::selectTask( int TaskId )
 	}
 }
 //---------------------------------------------------------------------------
-int TActivityForm::getLastTask( void )
+int TActivityForm::getLastTask()
 {
 	int	lastTask = 0;
 
@@ -1391,7 +1391,7 @@ int TActivityForm::getLastTask( void )
 		activeUserQuery->Prepare();
 	}
 
-	activeUserQuery->Params->Items[0]->AsInteger = userId;
+	activeUserQuery->Params->Items[0]->AsInteger = m_userId;
 	activeUserQuery->Open();
 	if( !activeUserQuery->Eof )
 		lastTask = activeUserQuery->Fields->Fields[0]->AsInteger;
@@ -1419,7 +1419,7 @@ void TActivityForm::saveTask( int TaskId )
 	}
 
 	updateUserSQL->Params->Items[0]->AsInteger = TaskId;
-	updateUserSQL->Params->Items[1]->AsInteger = userId;
+	updateUserSQL->Params->Items[1]->AsInteger = m_userId;
 	updateUserSQL->ExecSQL();
 }
 
@@ -1461,7 +1461,7 @@ void __fastcall TActivityForm::ExportAufgaben1Click(TObject *)
 
 		std::ofstream	csvFile( dbFile );
 		if( csvFile.is_open() )
-			exportTasksToStream( csvFile, userId );
+			exportTasksToStream( csvFile, m_userId );
 
 		csvFile.close();
 	}
@@ -1668,23 +1668,23 @@ void TActivityForm::setUserId( long userId, STRING userName, int permissions )
 	STRING newCaption = Caption.c_str();
 	newCaption += ' ';
 	newCaption += userName;
-	Caption = (const char*)newCaption;
+	Caption = newCaption.c_str();
 
-	readOnly = !(permissions & PERM_ACTIVITY_WRITE);
-	this->userId = userId;
+	m_readOnly = !(permissions & PERM_ACTIVITY_WRITE);
+	m_userId = userId;
 	TaskQuery->ParamByName( "theUser" )->AsInteger = userId;
 	TaskQuery->Open();
 
-	StartButton->Enabled = !readOnly;
-	StopButton->Enabled = !readOnly;
-	DeleteButton->Enabled = !readOnly;
-	SaveButton->Enabled = !readOnly;
+	StartButton->Enabled = !m_readOnly;
+	StopButton->Enabled = !m_readOnly;
+	DeleteButton->Enabled = !m_readOnly;
+	SaveButton->Enabled = !m_readOnly;
 
 	ActivityQuery->ParamByName( "theUser" )->AsInteger = userId;
 	// ActivityQuery->RequestLive = !readOnly;
 	ActivityQuery->Open();
 
-	if( !readOnly && SetupDialog->GetAutoActivity() )
+	if( !m_readOnly && SetupDialog->GetAutoActivity() )
 	{
 		long		lastTask = getLastTask();
 

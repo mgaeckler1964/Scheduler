@@ -1,32 +1,32 @@
 /*
-		Project:		Scheduler
-		Module:			
-		Description:	
-		Author:			Martin Gäckler
-		Address:		Hofmannsthalweg 14, A-4030 Linz
-		Web:			https://www.gaeckler.at/
+	Project:		Scheduler
+	Module:			CalendarFrm.cpp
+	Description:	Show a month- woth day calendar
+	Author:			Martin Gäckler
+	Address:		Hofmannsthalweg 14, A-4030 Linz
+	Web:			https://www.gaeckler.at/
 
-		Copyright:		(c) 1988-2024 Martin Gäckler
+	Copyright:		(c) 1988-2026 Martin Gäckler
 
-		This program is free software: you can redistribute it and/or modify  
-		it under the terms of the GNU General Public License as published by  
-		the Free Software Foundation, version 3.
+	This program is free software: you can redistribute it and/or modify  
+	it under the terms of the GNU General Public License as published by  
+	the Free Software Foundation, version 3.
 
-		You should have received a copy of the GNU General Public License 
-		along with this program. If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU General Public License 
+	along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-		THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Austria, Linz ``AS IS''
-		AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-		TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-		PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR
-		CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-		SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-		LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-		USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-		ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-		OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-		OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-		SUCH DAMAGE.
+	THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Linz, Austria ``AS IS''
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+	TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+	PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR
+	CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+	LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+	USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+	ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+	OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+	SUCH DAMAGE.
 */
 
 //---------------------------------------------------------------------------
@@ -55,7 +55,7 @@ TCalendarForm *CalendarForm;
 __fastcall TCalendarForm::TCalendarForm(TComponent* Owner)
 	: TForm(Owner)
 {
-	lastDay = lastMonth = lastYear = -1;
+	m_lastDay = m_lastMonth = m_lastYear = -1;
 }
 //---------------------------------------------------------------------------
 void __fastcall TCalendarForm::YearSpinChange(TObject *)
@@ -135,14 +135,14 @@ void __fastcall TCalendarForm::SchedulerChange(TObject *)
 	unsigned short	tmpYear = (unsigned short)Scheduler->Year;
 	unsigned short	tmpDay = (unsigned short)Scheduler->Day;
 
-	if( lastDay != tmpDay || lastMonth != tmpMonth || lastYear != tmpYear )
+	if( m_lastDay != tmpDay || m_lastMonth != tmpMonth || m_lastYear != tmpYear )
 	{
 		TDateTime 		firstDay = EncodeDate( tmpYear, tmpMonth, tmpDay );
 		TDateTime 		lastDay = firstDay + 1;
 
-		this->lastDay = tmpDay;
+		m_lastDay = tmpDay;
 
-		SchedulesQuery->ParamByName( "theUser" )->AsInteger = userId;
+		SchedulesQuery->ParamByName( "theUser" )->AsInteger = m_userId;
 		SchedulesQuery->ParamByName( "firstDay" )->AsDateTime = firstDay;
 		SchedulesQuery->ParamByName( "lastDay" )->AsDateTime = lastDay;
 
@@ -172,12 +172,12 @@ void __fastcall TCalendarForm::SchedulerChange(TObject *)
 		SchedulesQuery->Close();
 	}
 
-	if( lastMonth != tmpMonth || lastYear != tmpYear )
+	if( m_lastMonth != tmpMonth || m_lastYear != tmpYear )
 	{
 		TDateTime 		firstDay = EncodeDate( tmpYear, tmpMonth, 1 );
 
-		lastMonth = tmpMonth;
-		lastYear = tmpYear;
+		m_lastMonth = tmpMonth;
+		m_lastYear = tmpYear;
 
 		tmpMonth++;
 		if( tmpMonth > 12 )
@@ -188,7 +188,7 @@ void __fastcall TCalendarForm::SchedulerChange(TObject *)
 		TDateTime lastDay = EncodeDate( tmpYear, tmpMonth, 1 );
 
 
-		SchedulesQuery->ParamByName( "theUser" )->AsInteger = userId;
+		SchedulesQuery->ParamByName( "theUser" )->AsInteger = m_userId;
 		SchedulesQuery->ParamByName( "firstDay" )->AsDateTime = firstDay;
 		SchedulesQuery->ParamByName( "lastDay" )->AsDateTime = lastDay;
 

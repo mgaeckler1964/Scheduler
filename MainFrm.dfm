@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 89
-  Top = 597
+  Left = 872
+  Top = 438
   Width = 541
   Height = 345
   Caption = 'Terminverwaltung'
@@ -18,6 +18,8 @@ object MainForm: TMainForm
   OnActivate = FormActivate
   OnClose = FormClose
   OnDestroy = FormDestroy
+  OnDeactivate = FormDeactivate
+  OnHide = FormHide
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

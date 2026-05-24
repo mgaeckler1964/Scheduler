@@ -1,32 +1,32 @@
 /*
-		Project:		Scheduler
-		Module:			
-		Description:	
-		Author:			Martin Gäckler
-		Address:		Hofmannsthalweg 14, A-4030 Linz
-		Web:			https://www.gaeckler.at/
+	Project:		Scheduler
+	Module:			ActivityFrm.cpp
+	Description:	Work time (Arbeitszeiterfassung)
+	Author:			Martin Gäckler
+	Address:		Hofmannsthalweg 14, A-4030 Linz
+	Web:			https://www.gaeckler.at/
 
-		Copyright:		(c) 1988-2024 Martin Gäckler
+	Copyright:		(c) 1988-2026 Martin Gäckler
 
-		This program is free software: you can redistribute it and/or modify  
-		it under the terms of the GNU General Public License as published by  
-		the Free Software Foundation, version 3.
+	This program is free software: you can redistribute it and/or modify  
+	it under the terms of the GNU General Public License as published by  
+	the Free Software Foundation, version 3.
 
-		You should have received a copy of the GNU General Public License 
-		along with this program. If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU General Public License 
+	along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-		THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Austria, Linz ``AS IS''
-		AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-		TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-		PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR
-		CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-		SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-		LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-		USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-		ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-		OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-		OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-		SUCH DAMAGE.
+	THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Linz, Austria ``AS IS''
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+	TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+	PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR
+	CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+	LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+	USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+	ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+	OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+	SUCH DAMAGE.
 */
 
 //---------------------------------------------------------------------------
@@ -134,13 +134,13 @@ __published:	// IDE-managed Components
 	void __fastcall DBGridActivitiesDrawColumnCell(TObject *Sender, const TRect &Rect,
           int DataCol, TColumn *Column, TGridDrawState State);
 private:	// User declarations
-	long userId;
-	bool readOnly;
+	long m_userId;
+	bool m_readOnly;
 
-	int	currentActivityId;
+	int	m_currentActivityId;
 	void StartTimer( int activityId )
 	{
-		currentActivityId = activityId;
+		m_currentActivityId = activityId;
 
 		AutoSaveTimer->Interval = 10000;
 		AutoSaveTimer->Enabled = true;
@@ -165,7 +165,7 @@ private:	// User declarations
 		StartTimePicker->Enabled = true;
 		EndDatePicker->Enabled = true;
 		EndTimePicker->Enabled = true;
-		currentActivityId = -1;
+		m_currentActivityId = -1;
 	}
 	void RestartActivity( bool gotoFirst );
 	TDateTime getStart()
@@ -179,7 +179,7 @@ private:	// User declarations
 
 	int getSelectedTaskId();
 	void selectTask( int TaskId );
-	int getLastTask( void );
+	int getLastTask();
 	void saveTask( int TaskId );
 
 	void deleteActivities(
@@ -201,9 +201,9 @@ public:		// User declarations
 	gak::STRING importActivitiesFromStream( std::istream &csvFile );
 	__fastcall TActivityForm(TComponent* Owner);
 	void setUserId( long userId, gak::STRING userName, int perms );
-	long getUserId( void ) const
+	long getUserId() const
 	{
-		return userId;
+		return m_userId;
 	}
 };
 //---------------------------------------------------------------------------
