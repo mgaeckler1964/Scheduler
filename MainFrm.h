@@ -98,8 +98,7 @@ __published:	// IDE-managed Components
 	void __fastcall Rechte1Click(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall aboutClick(TObject *Sender);
-	void __fastcall FormHide(TObject *Sender);
-	void __fastcall FormDeactivate(TObject *Sender);
+	void __fastcall FormCreate(TObject *Sender);
 private:	// User declarations
 	const gak::vcl::UserOrGroup		*actUser;
 	int								databaseMode;	// auto, local, network

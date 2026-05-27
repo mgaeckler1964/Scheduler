@@ -552,9 +552,6 @@ void __fastcall TMainForm::FormShow(TObject *)
 		StatusBar->Panels->Items[1]->Text = ntUserName;
 	}
 
-	Application->OnMinimize = AppMinimize;
-	WindowProc = AppWindowProc;
-
 	// run the server if required
 	if( MobileServer
 	&& ServerPort > 0
@@ -595,7 +592,7 @@ void __fastcall TMainForm::FileLoginClick(TObject *)
 
 void __fastcall TMainForm::StatusBarResize(TObject *)
 {
-	StatusBar->Panels->Items[0]->Width = StatusBar->Width - 150;	
+	StatusBar->Panels->Items[0]->Width = StatusBar->Width - 150;
 }
 //---------------------------------------------------------------------------
 
@@ -619,15 +616,10 @@ void __fastcall TMainForm::aboutClick(TObject *)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TMainForm::FormHide(TObject *)
+void __fastcall TMainForm::FormCreate(TObject *)
 {
-	doEnterFunctionEx( gakLogging::llInfo, "TMainForm::FormHide" );
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TMainForm::FormDeactivate(TObject *)
-{
-	doEnterFunctionEx( gakLogging::llInfo, "TMainForm::FormDeactivate" );
+	Application->OnMinimize = AppMinimize;
+	WindowProc = AppWindowProc;
 }
 //---------------------------------------------------------------------------
 

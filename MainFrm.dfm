@@ -17,9 +17,8 @@ object MainForm: TMainForm
   WindowMenu = Fenster1
   OnActivate = FormActivate
   OnClose = FormClose
+  OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnDeactivate = FormDeactivate
-  OnHide = FormHide
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
