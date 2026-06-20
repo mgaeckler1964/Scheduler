@@ -33,6 +33,7 @@
 
 #include <vcl.h>
 #include <gak/vcl_tools.h>
+#include <gak/fmtNumber.h>
 #pragma hdrstop
 
 #include "PermissionsFrm.h"
@@ -52,12 +53,13 @@ __fastcall TPermissionsForm::TPermissionsForm(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TPermissionsForm::FormShow(TObject *)
 {
-	char filter[128];
+	gak::NumberBuffer	filter;
 
 	QueryAll->Open();
 	TableACLs->Filtered = true;
-	sprintf( filter, "SCHEDULER_ID=%d", actUser.ID );
-	TableACLs->Filter = filter;
+	filter += "SCHEDULER_ID=";
+	appendNumberFast(&filter, actUser.ID );
+	TableACLs->Filter = filter.c_str();
 	TableACLs->Open();
 }
 //---------------------------------------------------------------------------

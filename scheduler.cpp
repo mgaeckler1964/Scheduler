@@ -56,7 +56,8 @@ USEFORM("..\GAKLIB\Repository\LoginDlg.cpp", LoginForm);
 USEFORM("..\GAKLIB\Repository\changePasswordDlg.cpp", ChangePasswordForm);
 USEFORM("PermissionsFrm.cpp", PermissionsForm);
 USEFORM("..\GAKLIB\Repository\Config.cpp", ConfigDataModule); /* TDataModule: File Type */
-USEFORM("AboutFrm.cpp", AboutBox);
+USEFORM("..\GAKLIB\Repository\AboutFrm.cpp", AboutProgramForm);
+USELIB("..\..\object\winlib\winlibBCB.lib");
 //---------------------------------------------------------------------------
 #include "scheduleFrm.h"
 #include "ActivityFrm.h"
@@ -202,7 +203,7 @@ WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int nCmd)
 		Application->CreateForm(__classid(TChangePasswordForm), &ChangePasswordForm);
 		Application->CreateForm(__classid(TPermissionsForm), &PermissionsForm);
 		Application->CreateForm(__classid(TConfigDataModule), &ConfigDataModule);
-		Application->CreateForm(__classid(TAboutBox), &AboutBox);
+		Application->CreateForm(__classid(TAboutProgramForm), &AboutProgramForm);
 		if( !Application->Tag )
 		{
 			MainForm->Show();

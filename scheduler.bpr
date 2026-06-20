@@ -25,8 +25,8 @@
       ProjectDlg.dfm ActivityFrm.dfm ExportActivitiesDlg.dfm SetupDlg.dfm 
       DataUnit.dfm ..\GAKLIB\Repository\LoginDlg.dfm 
       ..\GAKLIB\Repository\changePasswordDlg.dfm PermissionsFrm.dfm 
-      ..\GAKLIB\Repository\Config.dfm AboutFrm.dfm"/>
-    <LIBFILES value="..\..\Object\gaklib\gaklib_bcb.lib"/>
+      ..\GAKLIB\Repository\Config.dfm ..\GAKLIB\Repository\AboutFrm.dfm"/>
+    <LIBFILES value="..\..\Object\gaklib\gaklib_bcb.lib ..\..\object\winlib\winlibBCB.lib"/>
     <LIBRARIES value="qrpt50.lib tee50.lib teedb50.lib vclx50.lib vcl50.lib ocx_pack.lib 
       vclbde50.lib vcldb50.lib gak_components.lib bcbsmp50.lib"/>
     <SPARELIBS value="bcbsmp50.lib gak_components.lib vcldb50.lib vclbde50.lib ocx_pack.lib 
@@ -43,14 +43,14 @@
     <USERDEFINES value="NDEBUG"/>
     <SYSDEFINES value="NO_STRICT;_VIS_NOLIB"/>
     <MAINSOURCE value="scheduler.cpp"/>
-    <INCLUDEPATH value="..\GAKLIB\Repository;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\ocx;..\GAKLIB\VCLcomp;..\gaklib\include"/>
+    <INCLUDEPATH value="..\GAKLIB\Repository;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\ocx;..\GAKLIB\VCLcomp;..\gaklib\include;.."/>
     <LIBPATH value="..\GAKLIB\Repository;..\..\Object\CBuilder\Lib;$(BCB)\lib_ger\obj;$(BCB)\lib_ger"/>
     <WARNINGS value="-w-par -w-8027 -w-8026"/>
     <WARNOPTSTR value=""/>
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-I..\GAKLIB\Repository -I$(BCB)\include -I$(BCB)\include\vcl -I$(BCB)\ocx 
-      -I..\GAKLIB\VCLcomp -I..\gaklib\include -src_suffix cpp -DNDEBUG -boa"/>
+      -I..\GAKLIB\VCLcomp -I..\gaklib\include -I.. -src_suffix cpp -DNDEBUG -boa"/>
     <CFLAG1 value="-O2 -H=..\..\object\schedule\schedule.csm -Hc -w -Vx -Ve -Tkh30000 -X- -a8 
       -6 -b- -d -k- -vi -c -tW -tWM"/>
     <PFLAGS value="-N2..\..\object\schedule -N0..\..\object\schedule -$Y- -$L- -$I- -$D- -$C- 
@@ -71,7 +71,7 @@ AutoIncBuild=1
 MajorVer=1
 MinorVer=0
 Release=0
-Build=309
+Build=310
 Debug=0
 PreRelease=0
 Special=0
@@ -83,7 +83,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Martin Gäckler
 FileDescription=Terminplaner für Windows NT
-FileVersion=1.0.0.309
+FileVersion=1.0.0.310
 InternalName=Schedule
 LegalCopyright=(c) 2001 - 2025 by Martin Gäckler
 LegalTrademarks=
@@ -93,8 +93,10 @@ ProductVersion=1.0.0.0
 Comments=https://www.gaeckler.at/
 
 [HistoryLists\hlIncludePath]
-Count=1
-Item0=..\GAKLIB\Repository;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\ocx;..\GAKLIB\VCLcomp;..\gaklib\include
+Count=3
+Item0=..\GAKLIB\Repository;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\ocx;..\GAKLIB\VCLcomp;..\gaklib\include;..
+Item1=..\GAKLIB\Repository;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\ocx;..\GAKLIB\VCLcomp;..\gaklib\include;..\
+Item2=..\GAKLIB\Repository;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\ocx;..\GAKLIB\VCLcomp;..\gaklib\include
 
 [HistoryLists\hlLibraryPath]
 Count=2

@@ -33,6 +33,7 @@
 
 #include <vcl.h>
 #include <vcl/registry.hpp>
+#include <gak/fmtNumber.h>
 
 #pragma hdrstop
 
@@ -72,9 +73,8 @@ void __fastcall TSetupDialog::FormCreate(TObject *)
 		if( reg->ValueExists( "ServerPort" ) )
 		{
 			int ServerPort = reg->ReadInteger( "ServerPort" );
-			char buffer[32];
-			sprintf( buffer, "%d", ServerPort );
-			EditServerPort->Text = buffer;
+			gak::NumberBuffer label;
+			EditServerPort->Text = gak::formatNumberFast( &label, ServerPort );
 		}
 		else
 			EditServerPort->Text = "";

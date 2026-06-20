@@ -37,6 +37,7 @@
 #include <Carbon/Carbon.h>
 
 #include <gak/csv.h>
+#include <gak/fmtNumber.h>
 
 using namespace gak;
 
@@ -486,9 +487,9 @@ static OSStatus selectActivityFile( void )
 pascal void TimerAction (EventLoopTimerRef  theTimer,
                          void* userData)
 {
-	time_t		curTimer;
-	int			ellapsed, seconds, minutes, hours;
-	char		buffer[16];
+	time_t				curTimer;
+	int					ellapsed, seconds, minutes, hours;
+	gak::NumberBuffer	buffer;
 
 	time( &curTimer );
 	
@@ -499,9 +500,13 @@ pascal void TimerAction (EventLoopTimerRef  theTimer,
 	ellapsed /= 60;
 	hours = ellapsed;
 	
-	sprintf( buffer, "%02d:%02d:%02d", hours, minutes, seconds );
+	formatNumberFast( &buffer, hour, 2, '0' );
+	buffer += ':';
+	appendNumberFast( &buffer, minutes, 2, '0' );
+	buffer += ':';
+	appendNumberFast( &buffer, seconds, 2, '0' );
 	
-	CFStringRef		newTimerStr = CFStringCreateWithFormat( NULL, NULL, CFSTR( "%s" ), buffer );
+	CFStringRef		newTimerStr = CFStringCreateWithFormat( NULL, NULL, CFSTR( "%s" ), buffer.c_str() );
 	ControlRef		timerLabel;
 	
 	OSStatus	err = GetControlByID( window, &timeTextID, &timerLabel );

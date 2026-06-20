@@ -8,11 +8,11 @@
 
 	Copyright:		(c) 1988-2026 Martin Gäckler
 
-	This program is free software: you can redistribute it and/or modify  
-	it under the terms of the GNU General Public License as published by  
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
 	the Free Software Foundation, version 3.
 
-	You should have received a copy of the GNU General Public License 
+	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 	THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Linz, Austria ``AS IS''
@@ -35,6 +35,7 @@
 
 #include <vcl.h>
 #include <gak/date.h>
+#include <gak/fmtNumber.h>
 
 #pragma hdrstop
 
@@ -85,16 +86,16 @@ void __fastcall TCalendarForm::MonthComboChange(TObject *)
 
 void __fastcall TCalendarForm::FormShow(TObject *)
 {
-	int		i;
-	char	timeStr[16];
+	gak::NumberBuffer	timeStr;
 
 	YearSpin->Value = Scheduler->Year;
 	MonthCombo->ItemIndex = Scheduler->Month -1;
 
-	for( i=0; i<DayView->RowCount; i++ )
+	for( unsigned i=0; i<DayView->RowCount; i++ )
 	{
-		sprintf( timeStr, "%02d:%02d", i/2, (i%2)*30 );
-		DayView->Cells[0][i] = timeStr;
+		gak::formatNumberFast( &timeStr, i/2, 2, '0' );
+		timeStr.addDigit( ':' );
+		DayView->Cells[0][i] = appendNumberFast( &timeStr, (i%2)*30, 2, '0' );
 	}
 }
 //---------------------------------------------------------------------------
@@ -107,19 +108,19 @@ void __fastcall TCalendarForm::SchedulerChange(TObject *)
 		(unsigned short)Scheduler->Day,
 		gak::Date::Month(Scheduler->Month),
 		(unsigned short)Scheduler->Year );
-	AnsiString	weekDay;
-	char		tmp[32];
-	const char	*holiDay;
+	AnsiString		weekDay;
+	gak::NumberBuffer	dayStr;
+	const char		*holiDay;
 
 	weekDay = theDate.weekDayName();
 
-	sprintf(
-		tmp,
-		"%d. %d. %d",
-		(int)Scheduler->Day, (int)Scheduler->Month, (int)Scheduler->Year
-	);
+	formatNumberFast( &dayStr, Scheduler->Day );
+	dayStr += ". ";
+	appendNumberFast( &dayStr, Scheduler->Month );
+	dayStr += ". ";
+	appendNumberFast( &dayStr, Scheduler->Year );
 	weekDay += ", ";
-	weekDay += tmp;
+	weekDay += dayStr.c_str();
 
 	holiDay = theDate.holiday();
 	if( holiDay && *holiDay )

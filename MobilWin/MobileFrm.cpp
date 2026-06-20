@@ -37,6 +37,7 @@
 
 #include <gak/csv.h>
 #include <gak/numericString.h>
+#include <gak/fmtNumber.h>
 
 #pragma hdrstop
 
@@ -358,8 +359,8 @@ void __fastcall TMobileForm::FormClose(TObject *Sender,
 
 void __fastcall TMobileForm::ClockTimerTimer(TObject *)
 {
-	char	buffer[32];
-	clock_t		numSeconds = clock() - startTime;
+	gak::NumberBuffer	buffer;
+	clock_t				numSeconds = clock() - startTime;
 	numSeconds /= CLK_TCK;
 
 	int		seconds = numSeconds % 60;
@@ -367,8 +368,13 @@ void __fastcall TMobileForm::ClockTimerTimer(TObject *)
 	int minutes = numSeconds % 60;
 	int hour = numSeconds / 60;
 
-	sprintf( buffer, "%02d:%02d:%02d", hour, minutes, seconds );
-	ClockLabel->Caption = buffer;
+	formatNumberFast( &buffer, hour, 2, '0' );
+	buffer += ':';
+	appendNumberFast( &buffer, minutes, 2, '0' );
+	buffer += ':';
+	appendNumberFast( &buffer, seconds, 2, '0' );
+
+	ClockLabel->Caption = buffer.c_str();
 }
 //---------------------------------------------------------------------------
 void __fastcall TMobileForm::AppMinimize(TObject *)

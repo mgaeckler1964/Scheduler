@@ -316,22 +316,9 @@ void TScheduleForm::exportOutlook( TQuery *datesSQL )
 				theDate = datesSQL->FieldByName( "StartDate" )->AsDateTime;
 				startDate = theDate.DateString();
 				startTime = theDate.TimeString();
-/*
-unsigned short hour, minute, sec, msec;
-char buffer[128];
-
-theDate.DecodeTime( &hour, &minute, &sec, &msec );
-sprintf( buffer, "%u:%u:%u.%u", hour, minute, sec, msec );
-startTime = buffer;
-*/
 				theDate = datesSQL->FieldByName( "EndDate" )->AsDateTime;
 				endDate = theDate.DateString();
 				endTime = theDate.TimeString();
-/*
-theDate.DecodeTime( &hour, &minute, &sec, &msec );
-sprintf( buffer, "%u:%u:%u.%u", hour, minute, sec, msec );
-endTime = buffer;
-*/
 				alarmFlag = !datesSQL->FieldByName( "AlarmDate" )->IsNull;
 				if( alarmFlag )
 				{

@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <vcl.h>
 #include <vcl/registry.hpp>
+#include <gak/fmtNumber.h>
 #pragma hdrstop
 
 #include "ExportActivitiesDlg.h"
@@ -50,19 +51,21 @@ __fastcall TExportActivitiesDialog::TExportActivitiesDialog(TComponent* Owner)
 //---------------------------------------------------------------------------
 void TExportActivitiesDialog::putFileNameAndMonth( const AnsiString &selProject, TDateTime startDate )
 {
-	unsigned short	year, month, day;
-	char			tmpBuff[32];
-	AnsiString		fileName;
+	unsigned short		year, month, day;
+	gak::NumberBuffer	tmpBuff;
+	AnsiString			fileName;
 
 	startDate.DecodeDate( &year, &month, &day );
 
 	YearSelect->Position = year;
 	MonthCombo->ItemIndex = month-1;
 
-	sprintf( tmpBuff, "%hu %02hu", year, month );
+	formatNumberFast( &tmpBuff, year );
+	tmpBuff += ' ';
+	appendNumberFast( &tmpBuff, month, 2, '0' );
 
 	fileName = selProject;
-	fileName += tmpBuff;
+	fileName += tmpBuff.c_str();
 	fileName += ".csv";
 
 	SaveDialog->FileName = fileName;

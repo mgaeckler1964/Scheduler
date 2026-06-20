@@ -37,6 +37,7 @@
 #include <vcl.h>
 #include <vcl/registry.hpp>
 #include <gak/vcl_tools.h>
+#include <gak/fmtNumber.h>
 #pragma hdrstop
 
 #include "LoginDlg.h"
@@ -167,13 +168,13 @@ void __fastcall TMainForm::Ende1Click(TObject *)
 
 void __fastcall TMainForm::theTimerTimer(TObject *)
 {
-	TDateTime		now = Now();
-	unsigned short	hour,
-					min,
-					sec,
-					msec,
-					newTimer;
-	char			theTime[32];
+	TDateTime			now = Now();
+	unsigned short		hour,
+						min,
+						sec,
+						msec,
+						newTimer;
+	gak::NumberBuffer	theTime;
 
 	theTimer->Enabled = false;
 	theTimer->Interval = 0;
@@ -185,8 +186,10 @@ void __fastcall TMainForm::theTimerTimer(TObject *)
 	theTimer->Interval = newTimer;
 	theTimer->Enabled = true;
 
-	sprintf( theTime, "%02u:%02u", (unsigned short)hour, (unsigned short)min );
-	StatusBar->Panels->Items[3]->Text = theTime;
+	formatNumberFast( &theTime, hour, 2, '0' );
+	theTime += ':';
+	appendNumberFast( &theTime, min, 2, '0' );
+	StatusBar->Panels->Items[3]->Text = theTime.c_str();
 }
 //---------------------------------------------------------------------------
 
@@ -612,7 +615,7 @@ void __fastcall TMainForm::FormClose(TObject *, TCloseAction &)
 
 void __fastcall TMainForm::aboutClick(TObject *)
 {
-	AboutBox->ShowModal();
+	AboutProgramForm->ShowModal();
 }
 //---------------------------------------------------------------------------
 
