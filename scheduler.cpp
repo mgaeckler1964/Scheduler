@@ -58,6 +58,7 @@ USEFORM("PermissionsFrm.cpp", PermissionsForm);
 USEFORM("..\GAKLIB\Repository\Config.cpp", ConfigDataModule); /* TDataModule: File Type */
 USEFORM("..\GAKLIB\Repository\AboutFrm.cpp", AboutProgramForm);
 USELIB("..\..\object\winlib\winlibBCB.lib");
+USE("scheduler.todo", ToDo);
 //---------------------------------------------------------------------------
 #include "scheduleFrm.h"
 #include "ActivityFrm.h"

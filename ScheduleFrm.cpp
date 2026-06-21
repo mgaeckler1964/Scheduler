@@ -8,11 +8,11 @@
 
 	Copyright:		(c) 1988-2026 Martin Gäckler
 
-	This program is free software: you can redistribute it and/or modify  
-	it under the terms of the GNU General Public License as published by  
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
 	the Free Software Foundation, version 3.
 
-	You should have received a copy of the GNU General Public License 
+	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 	THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Linz, Austria ``AS IS''
@@ -36,6 +36,7 @@
 #include <vcl.h>
 #include <vcl/registry.hpp>
 
+#include <gak/numericString.h>
 #include <gak/logfile.h>
 
 #pragma hdrstop
@@ -55,6 +56,26 @@ using namespace vcl;
 #pragma package(smart_init)
 #pragma resource "*.dfm"
 TScheduleForm *ScheduleForm;
+
+//---------------------------------------------------------------------------
+
+static TDateTime parseDate( const STRING &date, const STRING &time )
+{
+	Word	year, month, day, hour, minute, second;
+
+	const char *cp = date.c_str();
+	day = getValue<Word>( cp, &cp );
+	month = getValue<Word>( ++cp, &cp );
+	year = getValue<Word>( ++cp, &cp );
+	cp = time.c_str();
+	hour = getValue<Word>( cp, &cp );
+	minute = getValue<Word>( ++cp, &cp );
+	second = getValue<Word>( ++cp, &cp );
+	return EncodeDate( year, month, day ) +
+		EncodeTime( hour, minute, second, 0 );
+}
+
+//---------------------------------------------------------------------------
 
 void TScheduleForm::setUserId( long userId, const STRING &userName, int permissions )
 {
@@ -152,9 +173,6 @@ void TScheduleForm::importOutlook()
 					ErinnerungAm, ErinnerungUm,
 					Beschreibung, Ort;
 
-	int			  	day, month, year,
-					hour, minute, second;
-
 	TDateTime	  	startDate, endDate, alarmDate;
 	double		  	alarmBefore;
 
@@ -210,22 +228,13 @@ void TScheduleForm::importOutlook()
 				Beschreibung = record["Beschreibung"];
 				Ort = record["Ort"];
 
-				sscanf( BeginntAm, "%d.%d.%d", &day, &month, &year );
-				sscanf( BeginntUm, "%d:%d:%d", &hour, &minute, &second );
-				startDate = EncodeDate( (Word)year, (Word)month, (Word)day ) +
-							EncodeTime( (Word)hour, (Word)minute, (Word)second, 0 );
-
-				sscanf( EndetAm, "%d.%d.%d", &day, &month, &year );
-				sscanf( EndetUm, "%d:%d:%d", &hour, &minute, &second );
-				endDate = EncodeDate( (Word)year, (Word)month, (Word)day ) +
-							EncodeTime( (Word)hour, (Word)minute, (Word)second, 0 );
+				startDate = parseDate( BeginntAm, BeginntUm );
+				endDate = parseDate( EndetAm, EndetUm );
 
 				if( !ErinnerungEinAus.compareI( "ein" ) )
 				{
-					sscanf( ErinnerungAm, "%d.%d.%d", &day, &month, &year );
-					sscanf( ErinnerungUm, "%d:%d:%d", &hour, &minute, &second );
-					alarmDate = EncodeDate( (Word)year, (Word)month, (Word)day ) +
-								EncodeTime( (Word)hour, (Word)minute, (Word)second, 0 );
+					alarmDate = parseDate( ErinnerungAm, ErinnerungUm );
+
 					alarmBefore = startDate-alarmDate;
 					alarmBefore *= 24 * 60;
 				}

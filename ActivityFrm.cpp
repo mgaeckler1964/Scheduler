@@ -12,7 +12,7 @@
 	it under the terms of the GNU General Public License as published by  
 	the Free Software Foundation, version 3.
 
-	You should have received a copy of the GNU General Public License 
+	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 	THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Linz, Austria ``AS IS''
@@ -58,6 +58,23 @@ using namespace vcl;
 #pragma resource "*.dfm"
 TActivityForm *ActivityForm;
 gak::net::SocketServer<SchedulerServer> theActivitiesServer;
+
+//---------------------------------------------------------------------------
+
+static TDateTime parseDate( const STRING &dateTime )
+{
+	Word	year, month, day, hour, minute, second;
+
+	const char *cp = dateTime.c_str();
+	day = getValue<Word>( cp, &cp );
+	month = getValue<Word>( ++cp, &cp );
+	year = getValue<Word>( ++cp, &cp );
+	hour = getValue<Word>( cp, &cp );
+	minute = getValue<Word>( ++cp, &cp );
+	second = getValue<Word>( ++cp, &cp );
+	return EncodeDate( year, month, day ) +
+		EncodeTime( hour, minute, second, 0 );
+}
 
 //---------------------------------------------------------------------------
 
@@ -184,7 +201,7 @@ int SchedulerServer::handlePostRequest( const STRING &url )
 		{
 			int c = csvFile.get();
 			if( c >= 0 )
-				theStream.put( c );
+				theStream.put( char(c) );
 		}
 		theStream.flush();
 		theStream.clear();
@@ -213,7 +230,7 @@ int SchedulerServer::handlePostRequest( const STRING &url )
 		{
 			int c = theStream.get();
 			if( c >= 0 )
-				theFile.put( c );
+				theFile.put( char(c) );
 		}
 		theFile.close();
 
@@ -939,8 +956,6 @@ void __fastcall TActivityForm::ImportCSVClick(TObject *)
 	STRING				doubleActivity, badActivity,
 						startDateStr, endDateStr,
 						title, project;
-	int					day, month, year,
-						hour, minute, second;
 	TDateTime			startDate, endDate;
 	int					projectId, scheduleId;
 	bool				activityFound;
@@ -1015,10 +1030,8 @@ void __fastcall TActivityForm::ImportCSVClick(TObject *)
 					break;
 
 
-				sscanf( startDateStr, "%d.%d.%d %d:%d:%d", &day, &month, &year, &hour, &minute, &second );
-				startDate = EncodeDate( (Word)year, (Word)month, (Word)day ) + EncodeTime( (Word)hour, (Word)minute, (Word)second, 0 );
-				sscanf( endDateStr, "%d.%d.%d %d:%d:%d", &day, &month, &year, &hour, &minute, &second );
-				endDate = EncodeDate( (Word)year, (Word)month, (Word)day ) + EncodeTime( (Word)hour, (Word)minute, (Word)second, 0 );
+				startDate = parseDate(startDateStr);
+				endDate = parseDate(endDateStr);
 
 				ProjectScheduleQuery->Params->Items[0]->AsInteger = m_userId;
 				ProjectScheduleQuery->Params->Items[1]->AsString = title.c_str();
@@ -1493,15 +1506,10 @@ STRING TActivityForm::importActivitiesFromStream( std::istream &csvFile )
 			TDateTime startTime, endTime;
 
 			// we must save the last record
-			int day, month, year, hour, minute, second;
 			try
 			{
-				sscanf( STRING((*lastSet)["START_TIME"]), "%d.%d.%d %d:%d:%d",
-					&day, &month, &year, &hour, &minute, &second );
-				startTime = EncodeDate( (Word)year, (Word)month, (Word)day ) + EncodeTime( (Word)hour, (Word)minute, (Word)second, 0 );
-				sscanf( STRING((*actual)["START_TIME"]), "%d.%d.%d %d:%d:%d",
-					&day, &month, &year, &hour, &minute, &second );
-				endTime = EncodeDate( (Word)year, (Word)month, (Word)day ) + EncodeTime( (Word)hour, (Word)minute, (Word)second, 0 );
+				startTime = parseDate(STRING((*lastSet)["START_TIME"]));
+				endTime = parseDate(STRING((*actual)["START_TIME"]));
 			}
 			catch( Exception &e )
 			{
@@ -1568,10 +1576,7 @@ STRING TActivityForm::importActivitiesFromStream( std::istream &csvFile )
 		// we must save the last record
 		try
 		{
-			int day, month, year, hour, minute, second;
-			sscanf( STRING((*lastSet)["START_TIME"]), "%d.%d.%d %d:%d:%d",
-				&day, &month, &year, &hour, &minute, &second );
-			TDateTime startTime = EncodeDate( (Word)year, (Word)month, (Word)day ) + EncodeTime( (Word)hour, (Word)minute, (Word)second, 0 );
+			TDateTime startTime = parseDate(STRING((*lastSet)["START_TIME"]));
 
 			int	taskId;
 			taskId = (*lastSet)["ID"];
