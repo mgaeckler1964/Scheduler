@@ -6,7 +6,7 @@
 	Address:		Hofmannsthalweg 14, A-4030 Linz
 	Web:			https://www.gaeckler.at/
 
-	Copyright:		(c) 1988-2026 Martin Gäckler
+	Copyright:		(c) 2001-2026 Martin Gäckler
 
 	This program is free software: you can redistribute it and/or modify  
 	it under the terms of the GNU General Public License as published by  
@@ -42,6 +42,8 @@
 #include <gak/directory.h>
 
 #pragma hdrstop
+
+#include <gak/memory>
 
 #include "DataUnit.h"
 #include "ActivityFrm.h"
@@ -82,7 +84,7 @@ static void exportTasksToStream( std::ostream &out, int userID )
 {
 	long	theId;
 	STRING	project, title;
-	std::auto_ptr<TQuery>	datesQuery(new TQuery( Application ));
+	std::unique_ptr<TQuery>	datesQuery(new TQuery( Application ));
 
 	datesQuery->DatabaseName = "SchedulerDB";
 
@@ -313,7 +315,7 @@ void TActivityForm::deleteActivities(
 )
 {
 	int						selProjectId = 0;
-	std::auto_ptr<TQuery>	delSql(new TQuery( this ));
+	std::unique_ptr<TQuery>	delSql(new TQuery( this ));
 
 	delSql->DatabaseName = "SchedulerDB";
 
@@ -755,7 +757,7 @@ void __fastcall TActivityForm::ExportProtocolClick(TObject *)
 				doExportProtocol( fp, selProject, roundValue, minDate, maxDate );
 			else
 			{
-				std::auto_ptr<TQuery>	projectQuery(new TQuery( this ));
+				std::unique_ptr<TQuery>	projectQuery(new TQuery( this ));
 				double	totalEffortThisMonth = 0.0;
 
 				projectQuery->SQL->Add(
@@ -892,7 +894,7 @@ bool TActivityForm::testActivities( bool showOk )
 
 void __fastcall TActivityForm::ExportCSVClick(TObject *)
 {
-	std::auto_ptr<TRegistry> registry(new TRegistry());
+	std::unique_ptr<TRegistry> registry(new TRegistry());
 
 	TMainForm::	setDateFormats();
 
@@ -994,7 +996,7 @@ void __fastcall TActivityForm::ImportCSVClick(TObject *)
 		ScheduleInsertQuery->DatabaseName = "SchedulerDB";
 	}
 
-	std::auto_ptr<TRegistry> registry(new TRegistry());
+	std::unique_ptr<TRegistry> registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false ) )
 	{
@@ -1443,7 +1445,7 @@ void __fastcall TActivityForm::FormDestroy(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TActivityForm::ExportAufgaben1Click(TObject *)
 {
-	std::auto_ptr<TRegistry>	registry(new TRegistry());
+	std::unique_ptr<TRegistry>	registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "TaskPath" ) )
@@ -1613,7 +1615,7 @@ STRING TActivityForm::importActivitiesFromStream( std::istream &csvFile )
 
 void __fastcall TActivityForm::ImportTtigkeiten1Click(TObject *)
 {
-	std::auto_ptr<TRegistry>	registry(new TRegistry());
+	std::unique_ptr<TRegistry>	registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "ActivityPath" ) )

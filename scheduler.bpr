@@ -71,7 +71,7 @@ AutoIncBuild=1
 MajorVer=1
 MinorVer=0
 Release=0
-Build=310
+Build=311
 Debug=0
 PreRelease=0
 Special=0
@@ -83,9 +83,9 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Martin Gäckler
 FileDescription=Terminplaner für Windows NT
-FileVersion=1.0.0.310
+FileVersion=1.0.0.311
 InternalName=Schedule
-LegalCopyright=(c) 2001 - 2025 by Martin Gäckler
+LegalCopyright=(c) 2001 - 2026 by Martin Gäckler
 LegalTrademarks=
 OriginalFilename=SCHEDULER.EXE
 ProductName=Scheduler
@@ -141,10 +141,5 @@ LinkCGLIB=0
 AddServerUnit=1
 AddClientUnit=1
 PrecompiledHeaders=1
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
   </IDEOPTIONS>
 </PROJECT>

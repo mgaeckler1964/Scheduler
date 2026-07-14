@@ -6,7 +6,7 @@
 	Address:		Hofmannsthalweg 14, A-4030 Linz
 	Web:			https://www.gaeckler.at/
 
-	Copyright:		(c) 1988-2026 Martin Gäckler
+	Copyright:		(c) 2001-2026 Martin Gäckler
 
 	This program is free software: you can redistribute it and/or modify  
 	it under the terms of the GNU General Public License as published by  
@@ -35,6 +35,7 @@
 #include <vcl/registry.hpp>
 #include <gak/fmtNumber.h>
 #pragma hdrstop
+#include <gak/memory>
 
 #include "ExportActivitiesDlg.h"
 #include "MainFrm.h"
@@ -99,7 +100,7 @@ int __fastcall TExportActivitiesDialog::Show( const AnsiString &selProject, TDat
 	ProjectCombo->ItemIndex = selIndex +1;
 
 	// setup other options
-	std::auto_ptr<TRegistry>	registry(new TRegistry());
+	std::unique_ptr<TRegistry>	registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false ) )
 	{
@@ -135,7 +136,7 @@ void __fastcall TExportActivitiesDialog::ButtonBrowseClick(TObject *)
 //---------------------------------------------------------------------------
 void __fastcall TExportActivitiesDialog::ButtonOkClick(TObject *)
 {
-	std::auto_ptr<TRegistry>	registry(new TRegistry());
+	std::unique_ptr<TRegistry>	registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, true ) )
 	{

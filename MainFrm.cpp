@@ -6,7 +6,7 @@
 	Address:		Hofmannsthalweg 14, A-4030 Linz
 	Web:			https://www.gaeckler.at/
 
-	Copyright:		(c) 1988-2026 Martin Gäckler
+	Copyright:		(c) 2001-2026 Martin Gäckler
 
 	This program is free software: you can redistribute it and/or modify  
 	it under the terms of the GNU General Public License as published by  
@@ -39,6 +39,7 @@
 #include <gak/vcl_tools.h>
 #include <gak/fmtNumber.h>
 #pragma hdrstop
+#include <gak/memory>
 
 #include "LoginDlg.h"
 #include "UserDlg.h"
@@ -84,7 +85,7 @@ int TMainForm::loadPermissions( int schedulerId )
 		userPermissions = -1;
 	else
 	{
-		std::auto_ptr<TQuery> theQuery(new TQuery(NULL));
+		std::unique_ptr<TQuery> theQuery(new TQuery(NULL));
 		theQuery->DatabaseName = theDatabase->DatabaseName;
 		theQuery->SQL->Add(
 			"select permissions "
@@ -390,7 +391,7 @@ void __fastcall TMainForm::FormShow(TObject *)
 
 	setDateFormats();
 
-	std::auto_ptr<TRegistry>	reg(new TRegistry());
+	std::unique_ptr<TRegistry>	reg(new TRegistry());
 
 	if( reg->OpenKey( REGISTRY_KEY, false ) )
 	{

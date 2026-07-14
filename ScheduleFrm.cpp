@@ -6,7 +6,7 @@
 	Address:		Hofmannsthalweg 14, A-4030 Linz
 	Web:			https://www.gaeckler.at/
 
-	Copyright:		(c) 1988-2026 Martin Gäckler
+	Copyright:		(c) 2001-2026 Martin Gäckler
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -38,10 +38,10 @@
 
 #include <gak/numericString.h>
 #include <gak/logfile.h>
-
+#include <gak/csv.h>
 #pragma hdrstop
 
-#include <gak/csv.h>
+#include <gak/memory>
 
 #include "ScheduleFrm.h"
 #include "PermissionsFrm.h"
@@ -176,7 +176,7 @@ void TScheduleForm::importOutlook()
 	TDateTime	  	startDate, endDate, alarmDate;
 	double		  	alarmBefore;
 
-	std::auto_ptr<TRegistry>	registry(new TRegistry());
+	std::unique_ptr<TRegistry>	registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "OutlookPath" ) )
@@ -273,7 +273,7 @@ void TScheduleForm::exportOutlook( TQuery *datesSQL )
 
 	TDateTime	theDate;
 
-	std::auto_ptr<TRegistry> registry(new TRegistry());
+	std::unique_ptr<TRegistry> registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "OutlookPath" ) )
@@ -367,7 +367,7 @@ void TScheduleForm::exportOutlook( TQuery *datesSQL )
 //---------------------------------------------------------------------------
 void TScheduleForm::importCasio()
 {
-	std::auto_ptr<TRegistry> registry(new TRegistry());
+	std::unique_ptr<TRegistry> registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "CasioPath" ) )
@@ -453,7 +453,7 @@ void TScheduleForm::exportCasio( TQuery *datesSQL )
 {
 	long		maxId = getLastExport(), theId;
 
-	std::auto_ptr<TRegistry> registry(new TRegistry());
+	std::unique_ptr<TRegistry> registry(new TRegistry());
 
 	if( registry->OpenKey( REGISTRY_KEY, false )
 	&&  registry->ValueExists( "CasioPath" ) )
@@ -568,7 +568,7 @@ void __fastcall TScheduleForm::TerminLschenClick(TObject *)
 						"Achtung",
 						MB_YESNO|MB_ICONQUESTION ) == IDYES )
 	{
-		std::auto_ptr<TQuery>	delSQL(new TQuery( Application ) );
+		std::unique_ptr<TQuery>	delSQL(new TQuery( Application ) );
 
 		delSQL->DatabaseName = "SchedulerDB";
 		delSQL->SQL->Add( "delete from schedule where id = :theId" );
@@ -709,7 +709,7 @@ void __fastcall TScheduleForm::BitBtnDeleteAllClick(TObject *)
 						"Achtung",
 						MB_YESNO|MB_ICONQUESTION ) == IDYES )
 	{
-		std::auto_ptr<TQuery>	delSQL(new TQuery( Application ));
+		std::unique_ptr<TQuery>	delSQL(new TQuery( Application ));
 
 		delSQL->DatabaseName = "SchedulerDB";
 		delSQL->SQL->Add( "delete from schedule s where s.userId = :theUser and s.EndDate < :today" );
@@ -876,7 +876,7 @@ void __fastcall TScheduleForm::theTimerTimer(TObject *)
 			}
 			else
 			{
-				std::auto_ptr<TRegistry> reg(new TRegistry());
+				std::unique_ptr<TRegistry> reg(new TRegistry());
 
 				if( reg->OpenKey( REGISTRY_KEY, false ) )
 				{
@@ -903,7 +903,7 @@ void __fastcall TScheduleForm::theTimerTimer(TObject *)
 			if( alarmButton == mrOk && redoTime > 0 )
 			{
 
-				std::auto_ptr<TRegistry> reg(new TRegistry());
+				std::unique_ptr<TRegistry> reg(new TRegistry());
 
 				if( reg->OpenKey( REGISTRY_KEY, true ) )
 				{
@@ -984,7 +984,7 @@ void __fastcall TScheduleForm::FinishBitBtnClick(TObject *)
 						"Achtung",
 						MB_YESNO|MB_ICONQUESTION ) == IDYES )
 	{
-		std::auto_ptr<TQuery>	delSQL(new TQuery( Application ) );
+		std::unique_ptr<TQuery>	delSQL(new TQuery( Application ) );
 
 		delSQL->DatabaseName = "SchedulerDB";
 		delSQL->SQL->Add( "update schedule set AlarmDate = null where id = :theId" );

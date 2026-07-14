@@ -6,7 +6,7 @@
 	Address:		Hofmannsthalweg 14, A-4030 Linz
 	Web:			https://www.gaeckler.at/
 
-	Copyright:		(c) 1988-2026 Martin Gäckler
+	Copyright:		(c) 2001-2026 Martin Gäckler
 
 	This program is free software: you can redistribute it and/or modify  
 	it under the terms of the GNU General Public License as published by  
@@ -36,6 +36,7 @@
 #include <gak/numericString.h>
 
 #pragma hdrstop
+#include <gak/memory>
 #include "MainFrm.h"
 
 USERES("scheduler.res");
@@ -121,7 +122,7 @@ static void saveActiveChild()
 
 		usersToOpen += formatNumber( *it );
 	}
-	std::auto_ptr<TRegistry>	reg(new TRegistry());
+	std::unique_ptr<TRegistry>	reg(new TRegistry());
 
 	reg->OpenKey( REGISTRY_KEY, true );
 	if( MainForm->ActiveMDIChild )
@@ -141,7 +142,7 @@ static void reactivateChild()
 	int							theChildTag = 0;
 	TWindowState				activeState = wsNormal;
 	T_STRING					usersToOpen;
-	std::auto_ptr<TRegistry>	reg(new TRegistry());
+	std::unique_ptr<TRegistry>	reg(new TRegistry());
 
 	if( reg->OpenKey( REGISTRY_KEY, false ) )
 	{

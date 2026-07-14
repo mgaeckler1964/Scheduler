@@ -6,7 +6,7 @@
 	Address:		Hofmannsthalweg 14, A-4030 Linz
 	Web:			https://www.gaeckler.at/
 
-	Copyright:		(c) 1988-2026 Martin Gäckler
+	Copyright:		(c) 2001-2026 Martin Gäckler
 
 	This program is free software: you can redistribute it and/or modify  
 	it under the terms of the GNU General Public License as published by  
@@ -37,6 +37,7 @@
 
 #pragma hdrstop
 
+#include <gak/memory>
 #include "SetupDlg.h"
 #include "MainFrm.h"
 //---------------------------------------------------------------------------
@@ -51,7 +52,7 @@ __fastcall TSetupDialog::TSetupDialog(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TSetupDialog::FormCreate(TObject *)
 {
-	std::auto_ptr<TRegistry>	reg(new TRegistry());
+	std::unique_ptr<TRegistry>	reg(new TRegistry());
 
 	if( reg->OpenKey( REGISTRY_KEY, false ) )
 	{
@@ -97,7 +98,7 @@ void __fastcall TSetupDialog::FormCreate(TObject *)
 //---------------------------------------------------------------------------
 void __fastcall TSetupDialog::ButtonOKClick(TObject *)
 {
-	std::auto_ptr<TRegistry>	reg(new TRegistry());
+	std::unique_ptr<TRegistry>	reg(new TRegistry());
 
 	reg->OpenKey( REGISTRY_KEY, true );
 	reg->WriteBool( "AutoActivity", AutoActivityCheckBox->Checked );
@@ -119,7 +120,7 @@ void __fastcall TSetupDialog::ButtonOKClick(TObject *)
 //---------------------------------------------------------------------------
 void __fastcall TSetupDialog::ButtonCancelClick(TObject *)
 {
-	std::auto_ptr<TRegistry>	reg(new TRegistry());
+	std::unique_ptr<TRegistry>	reg(new TRegistry());
 
 	if( reg->OpenKey( REGISTRY_KEY, false ) )
 	{

@@ -6,7 +6,7 @@
 	Address:		Hofmannsthalweg 14, A-4030 Linz
 	Web:			https://www.gaeckler.at/
 
-	Copyright:		(c) 1988-2026 Martin Gäckler
+	Copyright:		(c) 2001-2026 Martin Gäckler
 
 	This program is free software: you can redistribute it and/or modify  
 	it under the terms of the GNU General Public License as published by  
@@ -36,6 +36,7 @@
 
 #include <gak/date.h>
 #include <gak/vcl_tools.h>
+#include <gak/memory>
 
 #include "RecurringFrm.h"
 #include "MainFrm.h"
@@ -163,8 +164,8 @@ void TRecurringForm::getRecurringSchedules()
 	int				repeatMode, WeekDay, MonthDay, Month, counter, dow;
 	unsigned short	theDay, theMonth, theYear;
 
-	std::auto_ptr<TQuery>	repResQuery(new TQuery( Application ));
-	std::auto_ptr<TQuery>	reservatQuery(new TQuery( Application ));
+	std::unique_ptr<TQuery>	repResQuery(new TQuery( Application ));
+	std::unique_ptr<TQuery>	reservatQuery(new TQuery( Application ));
 
 	reservatQuery->DatabaseName = "SchedulerDB";
 	repResQuery->DatabaseName = "SchedulerDB";
@@ -361,7 +362,7 @@ void TRecurringForm::getRecurringSchedules()
 //---------------------------------------------------------------------------
 void TRecurringForm::removeSchedules()
 {
-	std::auto_ptr<TQuery>	delSql(new TQuery( Application ));
+	std::unique_ptr<TQuery>	delSql(new TQuery( Application ));
 
 	delSql->DatabaseName = "SchedulerDB";
 	delSql->SQL->Add( "delete from schedule where recurringId = :theId" );
